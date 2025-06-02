@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lịch Sử Bảo Dưỡng Xe</title>
+</head>
+<body>
+    {% extends 'core/base.html' %}
+
+    {% block title %}Lịch Sử Bảo Dưỡng Xe{% endblock %}
+
+    {% block content %}
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Lịch Sử Bảo Dưỡng Xe</h5>
+            </div>
+            <div class="card-body">
+                {% if records %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Xe</th>
+                                    <th>Ngày</th>
+                                    <th>Nội dung</th>
+                                    <th>Chi phí</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in records %}
+                                    <tr>
+                                        <td>{{ record.vehicle.bien_so }}</td>
+                                        <td>{{ record.ngay_bao_duong }}</td>
+                                        <td>{{ record.noi_dung }}</td>
+                                        <td>{{ record.chi_phi }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">Chưa có bản ghi bảo dưỡng nào.</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endblock %}
+</body>
+</html>

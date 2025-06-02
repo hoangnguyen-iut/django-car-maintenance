@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Danh Sách Xe{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Danh Sách Xe Của Bạn</h5>
+        <a href="{% url 'add_vehicle' %}" class="btn btn-primary">Thêm xe mới</a>
+    </div>
+    <div class="card-body">
+        {% if vehicles %}
+            <div class="list-group">
+                {% for vehicle in vehicles %}
+                    <div class="list-group-item">
+                        {{ vehicle.hang_xe }} {{ vehicle.dong_xe }} - {{ vehicle.bien_so }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">Không có xe nào được đăng ký.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
