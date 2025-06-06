@@ -17,16 +17,16 @@
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link px-5" href="{% url 'vehicle_list' %}">XE CỦA TÔI</a>
+                           <a class="nav-link px-5" href="{% url 'vehicle_list' %}">XE CỦA TÔI</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link px-5" href="{% url 'vehicle_list' %}">LỊCH SỬ BẢO DƯỠNG</a>
+                            <a class="nav-link px-5" href="{% url 'maintenance_list' %}">LỊCH SỬ BẢO DƯỠNG</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link px-5" href="{% url 'vehicle_list' %}">DANH SÁCH GARAGE</a>
+                            <a class="nav-link px-5" href="{% url 'garage_list' %}">DANH SÁCH GARAGE</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link px-5" href="{% url 'vehicle_list' %}">LỊCH HẸN BẢO DƯỠNG</a>
+                            <a class="nav-link px-5" href="{% url 'appointment_list' %}">LỊCH HẸN BẢO DƯỠNG</a>
                         </li>
                     {% endif %}
                 </ul>
