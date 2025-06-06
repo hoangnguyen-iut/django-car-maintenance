@@ -125,15 +125,11 @@ def edit_maintenance(request, pk):
 @login_required
 def delete_maintenance(request, pk):
     record = get_object_or_404(MaintenanceRecord, pk=pk, vehicle__owner=request.user)
-    
     if request.method == 'POST':
         record.delete()
-        messages.success(request, 'Xóa thành công!')
+        messages.success(request, 'Đã xóa lịch sử bảo dưỡng thành công!')
         return redirect('maintenance_list')
-        
-    return render(request, 'core/delete_maintenance.html', {
-        'record': record
-    })
+    return render(request, 'core/delete_maintenance.html', {'record': record})
 
 @login_required
 def create_appointment(request, garage_id):

@@ -40,10 +40,6 @@
                                 <td>{{ record.noi_dung }}</td>
                                 <td>{{ record.chi_phi|floatformat:0 }} VNĐ</td>
                                 <td>
-                                    <a href="{% url 'edit_maintenance' record.pk %}" 
-                                       class="btn btn-sm btn-primary">
-                                        <i class="fas fa-edit"></i> Sửa
-                                    </a>
                                     <a href="{% url 'delete_maintenance' record.pk %}" 
                                        class="btn btn-sm btn-danger">
                                         <i class="fas fa-trash"></i> Xóa
