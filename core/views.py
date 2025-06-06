@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Vehicle, MaintenanceRecord, Garage, GarageService, ServiceCategory
-from .forms import VehicleForm
+from .forms import VehicleForm, MaintenanceRecordForm
 from django.contrib.auth.forms import UserCreationForm
 
 # Hiển thị danh sách xe
@@ -14,8 +14,9 @@ def vehicle_list(request):
 # Hiển thị lịch sử bảo dưỡng xe (có thể lọc theo owner nếu cần)
 @login_required
 def maintenance_list(request):
-    # Lấy tất cả lịch sử bảo dưỡng cho các xe của user đăng nhập
-    records = MaintenanceRecord.objects.filter(vehicle__owner=request.user)
+    records = MaintenanceRecord.objects.filter(
+        vehicle__owner=request.user
+    ).order_by('-ngay_bao_duong')  # Sort by maintenance date instead
     return render(request, 'core/maintenance_list.html', {'records': records})
 
 # Hiển thị danh sách các Garage
@@ -87,3 +88,18 @@ def garage_detail(request, pk):
         'services': services
     }
     return render(request, 'core/garage_detail.html', context)
+
+@login_required
+def add_maintenance(request):
+    if request.method == 'POST':
+        form = MaintenanceRecordForm(request.POST)
+        if form.is_valid():
+            record = form.save(commit=False)
+            record.save()
+            messages.success(request, 'Đã thêm lịch sử bảo dưỡng thành công!')
+            return redirect('maintenance_list')
+    else:
+        form = MaintenanceRecordForm()
+        # Chỉ hiển thị xe của user hiện tại
+        form.fields['vehicle'].queryset = Vehicle.objects.filter(owner=request.user)
+    return render(request, 'core/add_maintenance.html', {'form': form})

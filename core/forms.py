@@ -1,5 +1,5 @@
 from django import forms
-from .models import Vehicle
+from .models import Vehicle, MaintenanceRecord
 
 class VehicleForm(forms.ModelForm):
     class Meta:
@@ -28,4 +28,27 @@ class VehicleForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': ''
             }),
+        }
+
+class MaintenanceRecordForm(forms.ModelForm):
+    class Meta:
+        model = MaintenanceRecord
+        fields = ['vehicle', 'ngay_bao_duong', 'noi_dung', 'chi_phi']
+        labels = {
+            'vehicle': 'Chọn xe',
+            'ngay_bao_duong': 'Ngày bảo dưỡng',
+            'noi_dung': 'Nội dung bảo dưỡng',
+            'chi_phi': 'Chi phí (VNĐ)'
+        }
+        widgets = {
+            'vehicle': forms.Select(attrs={'class': 'form-control'}),
+            'ngay_bao_duong': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'noi_dung': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3
+            }),
+            'chi_phi': forms.NumberInput(attrs={'class': 'form-control'})
         }

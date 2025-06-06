@@ -13,13 +13,18 @@ class Vehicle(models.Model):
 
 class MaintenanceRecord(models.Model):
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='maintenance_records')
-    ngay_bao_duong = models.DateField()
-    noi_dung = models.TextField(help_text="Miêu tả công việc bảo dưỡng (thay dầu, kiểm tra phanh, v.v.)")
-    chi_phi = models.DecimalField(max_digits=10, decimal_places=2)
-    ghi_chu = models.TextField(blank=True, null=True)
+    ngay_bao_duong = models.DateField()  # Vietnamese field name for service_date
+    noi_dung = models.TextField()        # Vietnamese field name for description
+    chi_phi = models.DecimalField(max_digits=12, decimal_places=0)  # Vietnamese field name for cost
+    # Remove or comment out created_at if you don't need it
+    # created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Bảo dưỡng xe {self.vehicle.bien_so} ngày {self.ngay_bao_duong}"
+        return f"{self.vehicle.bien_so} - {self.ngay_bao_duong}"
+
+    class Meta:
+        verbose_name = "Lịch sử bảo dưỡng"
+        verbose_name_plural = "Lịch sử bảo dưỡng"
 
 class Garage(models.Model):
     ten_garage = models.CharField(max_length=100)
