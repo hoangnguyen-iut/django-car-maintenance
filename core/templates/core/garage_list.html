@@ -10,26 +10,27 @@
     {% block title %}Danh Sách Garage{% endblock %}
 
     {% block content %}
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Danh Sách Các Garage</h5>
-            </div>
-            <div class="card-body">
-                {% if garages %}
-                    <div class="list-group">
-                        {% for garage in garages %}
-                            <div class="list-group-item">
-                                <h6 class="mb-1">{{ garage.ten_garage }}</h6>
-                                <p class="mb-1">Địa chỉ: {{ garage.dia_chi }}</p>
-                                <small>SĐT: {{ garage.so_dien_thoai }}</small>
-                            </div>
-                        {% endfor %}
+    <div class="container mt-4">
+        <h2>Danh Sách Garage</h2>
+        <div class="row">
+            {% for garage in garages %}
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ garage.ten_garage }}</h5>
+                        <p class="card-text">
+                            <strong>Địa chỉ:</strong> {{ garage.dia_chi }}<br>
+                            <strong>Điện thoại:</strong> {{ garage.so_dien_thoai }}
+                        </p>
+                        <a href="{% url 'garage_detail' garage.pk %}" class="btn btn-primary">
+                            Xem chi tiết
+                        </a>
                     </div>
-                {% else %}
-                    <p class="text-muted">Chưa có garage nào.</p>
-                {% endif %}
+                </div>
             </div>
+            {% endfor %}
         </div>
+    </div>
     {% endblock %}
 </body>
 </html>

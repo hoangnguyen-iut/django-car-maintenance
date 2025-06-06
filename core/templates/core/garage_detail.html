@@ -1,0 +1,49 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ garage.ten_garage }} - Chi tiết{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="mb-0">{{ garage.ten_garage }}</h2>
+        </div>
+        <div class="card-body">
+            <p><strong>Địa chỉ:</strong> {{ garage.dia_chi }}</p>
+            <p><strong>Điện thoại:</strong> {{ garage.so_dien_thoai }}</p>
+            <p><strong>Mô tả:</strong> {{ garage.mo_ta }}</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="mb-0">Dịch Vụ Cung Cấp</h3>
+        </div>
+        <div class="card-body">
+            {% for category in categories %}
+            <div class="mb-4">
+                <h4>{{ category.ten }}</h4>
+                <div class="row">
+                    {% for service in services %}
+                    {% if service.danh_muc == category %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ service.ten_dich_vu }}</h5>
+                                <p class="card-text">{{ service.mo_ta }}</p>
+                                <p class="card-text">
+                                    <strong>Giá:</strong> {{ service.gia|floatformat:0 }} VNĐ<br>
+                                    <strong>Thời gian:</strong> {{ service.thoi_gian_uoc_tinh }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

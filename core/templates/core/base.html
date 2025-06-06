@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Quản lý Bảo trì Xe{% endblock %}</title>
+    <title>{% block title %}QUẢN LÝ BẢO TRÌ XE{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">Quản lý Bảo trì Xe</a>
+            <a class="navbar-brand" href="/">QUẢN LÝ BẢO TRÌ XE</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -17,30 +17,30 @@
                 <ul class="navbar-nav me-auto">
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'vehicle_list' %}">Xe của tôi</a>
+                            <a class="nav-link" href="{% url 'vehicle_list' %}">XE CỦA TÔI</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'maintenance_list' %}">Lịch sử bảo dưỡng</a>
+                            <a class="nav-link" href="{% url 'maintenance_list' %}">LỊCH SỬ BẢO DƯỠNG</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'garage_list' %}">Danh sách Garage</a>
+                            <a class="nav-link" href="{% url 'garage_list' %}">DANH SÁCH GARAGE</a>
                         </li>
                     {% endif %}
                 </ul>
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <span class="nav-link">Xin chào, {{ user.username }}</span>
+                            <span class="nav-link">XIN CHÀO, {{ user.username }}</span>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">Đăng xuất</a>
+                            <a class="nav-link" href="{% url 'logout' %}">ĐĂNG XUẤT</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Đăng nhập</a>
+                            <a class="nav-link" href="{% url 'login' %}">ĐĂNG NHẬP</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'register' %}">Đăng ký</a>
+                            <a class="nav-link" href="{% url 'register' %}">ĐĂNG KÝ</a>
                         </li>
                     {% endif %}
                 </ul>

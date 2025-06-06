@@ -10,5 +10,5 @@ urlpatterns = [
     path('garages/', views.garage_list, name='garage_list'),
     path('vehicles/<int:pk>/edit/', views.edit_vehicle, name='edit_vehicle'),
     path('vehicles/<int:pk>/delete/', views.delete_vehicle, name='delete_vehicle'),
-    path('garages/<int:pk>/', views.garage_detail, name='garage_detail'),
+    path('garage/<int:pk>/', views.garage_detail, name='garage_detail'),
 ]

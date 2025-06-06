@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Vehicle, MaintenanceRecord, Garage
+from .models import Vehicle, MaintenanceRecord, Garage, GarageService, ServiceCategory
 from .forms import VehicleForm
 from django.contrib.auth.forms import UserCreationForm
 
@@ -78,8 +78,12 @@ def register(request):
 
 def garage_detail(request, pk):
     garage = get_object_or_404(Garage, pk=pk)
-    services = garage.services.all()
-    return render(request, 'core/garage_detail.html', {
+    services = GarageService.objects.filter(garage=garage, trang_thai=True)
+    categories = ServiceCategory.objects.filter(garageservice__garage=garage).distinct()
+    
+    context = {
         'garage': garage,
+        'categories': categories,
         'services': services
-    })
+    }
+    return render(request, 'core/garage_detail.html', context)
