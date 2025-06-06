@@ -16,8 +16,6 @@ class MaintenanceRecord(models.Model):
     ngay_bao_duong = models.DateField()  # Vietnamese field name for service_date
     noi_dung = models.TextField()        # Vietnamese field name for description
     chi_phi = models.DecimalField(max_digits=12, decimal_places=0)  # Vietnamese field name for cost
-    # Remove or comment out created_at if you don't need it
-    # created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.vehicle.bien_so} - {self.ngay_bao_duong}"
