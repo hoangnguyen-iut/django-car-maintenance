@@ -1,20 +1,19 @@
 {% extends 'core/base.html' %}
-{% load static %}
 
-{% block title %}Thêm Xe Mới{% endblock %}
+{% block title %}Sửa Thông Tin Xe{% endblock %}
 
 {% block content %}
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">Thêm Xe Mới</h5>
+        <h5 class="mb-0">Sửa Thông Tin Xe</h5>
     </div>
     <div class="card-body">
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
             <div class="mt-4">
-                <button type="submit" class="btn btn-primary">Thêm Xe</button>
-                <a href="{% url 'vehicle_list' %}" class="btn btn-secondary">Quay về danh sách xe</a>
+                <button type="submit" class="btn btn-warning">Lưu thay đổi</button>
+                <a href="{% url 'vehicle_list' %}" class="btn btn-secondary">Hủy</a>
             </div>
         </form>
     </div>

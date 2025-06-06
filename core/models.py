@@ -23,13 +23,17 @@ class MaintenanceRecord(models.Model):
 
 class Garage(models.Model):
     ten_garage = models.CharField(max_length=100)
-    dia_chi = models.CharField(max_length=200)
-    so_dien_thoai = models.CharField(max_length=20)
-    dich_vu = models.TextField(help_text="Danh sách dịch vụ cung cấp")
+    dia_chi = models.CharField(max_length=200, default="Đang cập nhật")
+    so_dien_thoai = models.CharField(max_length=20, default="Đang cập nhật")
+    dich_vu = models.TextField(help_text="Danh sách dịch vụ cung cấp", default="Đang cập nhật")
     mo_ta = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.ten_garage
+
+    class Meta:
+        verbose_name = "Garage"
+        verbose_name_plural = "Danh sách Garage"
 
 class Appointment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointments')
@@ -41,3 +45,30 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"Lịch hẹn: {self.vehicle.bien_so} tại {self.garage.ten_garage} vào {self.ngay_gio}"
+
+class ServiceCategory(models.Model):
+    ten = models.CharField(max_length=100)
+    mo_ta = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.ten
+
+    class Meta:
+        verbose_name = "Danh mục dịch vụ"
+        verbose_name_plural = "Danh mục dịch vụ"
+
+class GarageService(models.Model):
+    garage = models.ForeignKey('Garage', on_delete=models.CASCADE, related_name='chi_tiet_dich_vu')
+    danh_muc = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE)
+    ten_dich_vu = models.CharField(max_length=200)
+    mo_ta = models.TextField()
+    gia = models.DecimalField(max_digits=12, decimal_places=0)
+    thoi_gian_uoc_tinh = models.CharField(max_length=50, help_text="VD: 2-3 giờ")
+    trang_thai = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.garage.ten_garage} - {self.ten_dich_vu}"
+
+    class Meta:
+        verbose_name = "Dịch vụ của Garage"
+        verbose_name_plural = "Dịch vụ của Garage"
