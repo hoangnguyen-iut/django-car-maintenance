@@ -14,4 +14,6 @@ urlpatterns = [
     path('garage/<int:pk>/', views.garage_detail, name='garage_detail'),
     path('maintenance/<int:pk>/edit/', views.edit_maintenance, name='edit_maintenance'),
     path('maintenance/<int:pk>/delete/', views.delete_maintenance, name='delete_maintenance'),
+    path('garage/<int:garage_id>/appointment/', views.create_appointment, name='create_appointment'),
+    path('appointments/', views.appointment_list, name='appointment_list'),
 ]

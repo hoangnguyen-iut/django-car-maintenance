@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Vehicle, MaintenanceRecord, Garage, GarageService, ServiceCategory
-from .forms import VehicleForm, MaintenanceRecordForm
+from .models import Vehicle, MaintenanceRecord, Garage, GarageService, ServiceCategory, Appointment
+from .forms import VehicleForm, MaintenanceRecordForm, AppointmentForm
 from django.contrib.auth.forms import UserCreationForm
 
 # Hiển thị danh sách xe
@@ -133,4 +133,37 @@ def delete_maintenance(request, pk):
         
     return render(request, 'core/delete_maintenance.html', {
         'record': record
+    })
+
+@login_required
+def create_appointment(request, garage_id):
+    garage = get_object_or_404(Garage, pk=garage_id)
+    
+    if request.method == 'POST':
+        form = AppointmentForm(request.POST)
+        if form.is_valid():
+            appointment = form.save(commit=False)
+            appointment.user = request.user
+            appointment.garage = garage
+            appointment.trang_thai = 'Chờ xác nhận'
+            appointment.save()
+            messages.success(request, 'Đặt lịch hẹn thành công!')
+            return redirect('appointment_list')
+    else:
+        form = AppointmentForm()
+        # Chỉ hiển thị xe của user hiện tại
+        form.fields['vehicle'].queryset = Vehicle.objects.filter(owner=request.user)
+    
+    return render(request, 'core/create_appointment.html', {
+        'form': form,
+        'garage': garage
+    })
+
+@login_required
+def appointment_list(request):
+    appointments = Appointment.objects.filter(
+        user=request.user
+    ).order_by('-ngay_gio')
+    return render(request, 'core/appointment_list.html', {
+        'appointments': appointments
     })

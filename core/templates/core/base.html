@@ -14,7 +14,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+                <ul class="navbar-nav">
                     {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'vehicle_list' %}">XE CỦA TÔI</a>
@@ -25,22 +25,8 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'garage_list' %}">DANH SÁCH GARAGE</a>
                         </li>
-                    {% endif %}
-                </ul>
-                <ul class="navbar-nav">
-                    {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <span class="nav-link">XIN CHÀO, {{ user.username }}</span>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">ĐĂNG XUẤT</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">ĐĂNG NHẬP</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'register' %}">ĐĂNG KÝ</a>
+                            <a class="nav-link" href="{% url 'appointment_list' %}">LỊCH HẸN BẢO DƯỠNG</a>
                         </li>
                     {% endif %}
                 </ul>
