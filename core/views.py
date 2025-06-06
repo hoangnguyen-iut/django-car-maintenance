@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .models import Vehicle, MaintenanceRecord, Garage, GarageService, ServiceCategory
 from .forms import VehicleForm, MaintenanceRecordForm
 from django.contrib.auth.forms import UserCreationForm
@@ -103,3 +103,34 @@ def add_maintenance(request):
         # Chỉ hiển thị xe của user hiện tại
         form.fields['vehicle'].queryset = Vehicle.objects.filter(owner=request.user)
     return render(request, 'core/add_maintenance.html', {'form': form})
+
+@login_required
+def edit_maintenance(request, pk):
+    record = get_object_or_404(MaintenanceRecord, pk=pk, vehicle__owner=request.user)
+    
+    if request.method == 'POST':
+        form = MaintenanceRecordForm(request.POST, instance=record)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Cập nhật thành công!')
+            return redirect('maintenance_list')
+    else:
+        form = MaintenanceRecordForm(instance=record)
+        
+    return render(request, 'core/edit_maintenance.html', {
+        'form': form,
+        'record': record
+    })
+
+@login_required
+def delete_maintenance(request, pk):
+    record = get_object_or_404(MaintenanceRecord, pk=pk, vehicle__owner=request.user)
+    
+    if request.method == 'POST':
+        record.delete()
+        messages.success(request, 'Xóa thành công!')
+        return redirect('maintenance_list')
+        
+    return render(request, 'core/delete_maintenance.html', {
+        'record': record
+    })
