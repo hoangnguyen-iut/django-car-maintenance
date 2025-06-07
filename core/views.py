@@ -239,3 +239,6 @@ def handle_appointment(request, appointment_id):
     
     appointment.save()
     return redirect('garage_dashboard')
+
+def welcome(request):
+    return render(request, 'core/welcome.html')

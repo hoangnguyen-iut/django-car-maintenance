@@ -31,6 +31,7 @@ urlpatterns = [
     path('garage/appointments/<int:pk>/update/', views.update_appointment_status, name='update_appointment_status'),
     path('garage/dashboard/', views.garage_dashboard, name='garage_dashboard'),
     path('garage/appointment/<int:appointment_id>/', views.handle_appointment, name='handle_appointment'),
+    path('welcome/', views.welcome, name='welcome'),
     # Comment out or remove duplicate login/register URLs
     # path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
     # path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
