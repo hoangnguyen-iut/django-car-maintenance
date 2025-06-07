@@ -22,6 +22,7 @@ class MaintenanceRecord(models.Model):
     )
     noi_dung = models.TextField()        # Vietnamese field name for description
     chi_phi = models.DecimalField(max_digits=12, decimal_places=0)  # Vietnamese field name for cost
+    maintenance_period = models.IntegerField(default=90)  # Add default value
 
     def __str__(self):
         return f"{self.vehicle.bien_so} - {self.ngay_bao_duong}"

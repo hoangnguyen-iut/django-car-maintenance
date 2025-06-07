@@ -4,8 +4,8 @@ from django.contrib.auth import views as auth_views
 from django.shortcuts import redirect
 
 urlpatterns = [
-    # Chuyển hướng trang chủ về /accounts/login/?next=/vehicles/
-    path('', lambda request: redirect('/accounts/login/?next=/vehicles/'), name='home'),
+    # Chuyển hướng về /login thay vì /accounts/login
+    path('', lambda request: redirect('/login/?next=/vehicles/'), name='home'),
     path('vehicles/', views.vehicle_list, name='vehicle_list'),
     path('vehicles/add/', views.add_vehicle, name='add_vehicle'),
     path('maintenance/', views.maintenance_list, name='maintenance_list'),
@@ -20,7 +20,11 @@ urlpatterns = [
     path('appointments/', views.appointment_list, name='appointment_list'),
     path('login/', auth_views.LoginView.as_view(
         template_name='core/login.html',
-        next_page='/vehicles'
+        next_page='/vehicles/'  # Thêm dấu / ở cuối
     ), name='login'),
     path('register/', views.register, name='register'),  # Thay đổi từ accounts/register/
+    path('logout/', auth_views.LogoutView.as_view(
+        next_page='/login/',
+        template_name='core/login.html'
+    ), name='logout'),
 ]

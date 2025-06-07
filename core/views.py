@@ -95,17 +95,26 @@ def garage_detail(request, pk):
 
 @login_required
 def add_maintenance(request):
+    # Check if user has any vehicles
+    user_vehicles = Vehicle.objects.filter(owner=request.user)
+    if not user_vehicles.exists():
+        messages.warning(request, 'Bạn cần thêm ít nhất một xe trước khi thêm lịch sử bảo dưỡng!')
+        return redirect('add_vehicle')
+
     if request.method == 'POST':
         form = MaintenanceRecordForm(request.POST)
         if form.is_valid():
             maintenance = form.save(commit=False)
-            days = int(form.cleaned_data['maintenance_period'])
-            maintenance.ngay_den_han = maintenance.ngay_bao_duong + timedelta(days=days)
+            maintenance.maintenance_period = form.cleaned_data['maintenance_period']
+            maintenance.ngay_den_han = maintenance.ngay_bao_duong + timedelta(days=maintenance.maintenance_period)
             maintenance.save()
             messages.success(request, 'Thêm mới lịch sử bảo dưỡng thành công!')
             return redirect('maintenance_list')
     else:
         form = MaintenanceRecordForm()
+        # Filter vehicles for current user
+        form.fields['vehicle'].queryset = user_vehicles
+
     return render(request, 'core/add_maintenance.html', {'form': form})
 
 @login_required

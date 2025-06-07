@@ -28,7 +28,7 @@
                         <label for="id_password" class="form-label">Mật khẩu:</label>
                         {{ form.password }}
                     </div>
-                    <input type="hidden" name="next" value="{{ next }}">
+                    <input type="hidden" name="next" value="{% url 'vehicle_list' %}">
                     <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
                 </form>
                 <p class="text-center mt-3">
