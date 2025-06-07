@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Vehicle, MaintenanceRecord, Garage, GarageService, ServiceCategory, Appointment
 from .forms import VehicleForm, MaintenanceRecordForm, AppointmentForm
 from django.contrib.auth.forms import UserCreationForm
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 # Hiển thị danh sách xe
 @login_required
@@ -15,13 +15,19 @@ def vehicle_list(request):
 # Hiển thị lịch sử bảo dưỡng xe (có thể lọc theo owner nếu cần)
 @login_required
 def maintenance_list(request):
+    today = datetime.now().date()
     records = MaintenanceRecord.objects.filter(
         vehicle__owner=request.user
-    ).order_by('-ngay_bao_duong')  # Sort by maintenance date instead
+    ).order_by('-ngay_bao_duong')
+    
+    for record in records:
+        if record.ngay_den_han:
+            days_diff = (record.ngay_den_han - today).days
+            record.days_remaining = days_diff
     
     return render(request, 'core/maintenance_list.html', {
         'records': records,
-        'today': date.today()
+        'today': today,
     })
 
 # Hiển thị danh sách các Garage

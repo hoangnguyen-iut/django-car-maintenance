@@ -40,8 +40,22 @@
                                 <td>{{ record.ngay_bao_duong|date:"d/m/Y" }}</td>
                                 <td>
                                     {{ record.ngay_den_han|date:"d/m/Y" }}
-                                    {% if record.ngay_den_han and record.ngay_den_han <= today %}
-                                        <span class="badge bg-danger">Đã đến hạn</span>
+                                    {% if record.ngay_den_han %}
+                                        {% if record.days_remaining < 0 %}
+                                            <span class="badge bg-danger">
+                                                Quá hạn {{ record.days_overdue }} ngày
+                                            </span>
+                                        {% elif record.days_remaining == 0 %}
+                                            <span class="badge bg-danger">Đến hạn hôm nay</span>
+                                        {% elif record.days_remaining <= 7 %}
+                                            <span class="badge bg-warning text-dark">
+                                                Còn {{ record.days_remaining }} ngày
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-success">
+                                                Còn {{ record.days_remaining }} ngày
+                                            </span>
+                                        {% endif %}
                                     {% endif %}
                                 </td>
                                 <td>{{ record.noi_dung }}</td>
@@ -69,6 +83,41 @@
         </div>
         {% endif %}
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            {% if notifications %}
+                let notificationText = '<div class="text-left">';
+                {% for notification in notifications %}
+                    notificationText += `
+                        <div class="mb-3">
+                            <strong class="text-danger">Xe: ${escapeHtml("{{ notification.vehicle }}")}</strong><br>
+                            <span>Nội dung: ${escapeHtml("{{ notification.content }}")}</span><br>
+                            <span class="text-danger">Quá hạn: {{ notification.days_overdue }} ngày</span>
+                        </div>
+                    `;
+                {% endfor %}
+                notificationText += '</div>';
+
+                Swal.fire({
+                    title: 'Thông báo bảo dưỡng quá hạn!',
+                    html: notificationText,
+                    icon: 'warning',
+                    confirmButtonText: 'Đã hiểu',
+                    confirmButtonColor: '#3085d6'
+                });
+            {% endif %}
+        });
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
     {% endblock %}
 </body>
 </html>
