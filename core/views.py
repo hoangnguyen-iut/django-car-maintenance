@@ -75,12 +75,11 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Account created successfully for {username}!')
+            messages.success(request, 'Đăng ký tài khoản thành công! Vui lòng đăng nhập.')
             return redirect('login')
     else:
         form = UserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
+    return render(request, 'core/register.html', {'form': form})
 
 def garage_detail(request, pk):
     garage = get_object_or_404(Garage, pk=pk)

@@ -30,6 +30,18 @@
                         </li>
                     {% endif %}
                 </ul>
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'login' %}">Đăng xuất</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </nav>

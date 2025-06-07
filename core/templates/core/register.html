@@ -1,0 +1,38 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">Đăng ký tài khoản</h2>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            {{ field.label_tag }}
+                            <div class="form-control">{{ field }}</div>
+                            {% if field.errors %}
+                                {% for error in field.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Đăng ký</button>
+                    </div>
+                </form>
+                <p class="text-center mt-3">
+                    Đã có tài khoản? <a href="{% url 'login' %}">Đăng nhập</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

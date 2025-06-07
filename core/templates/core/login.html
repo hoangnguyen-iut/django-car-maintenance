@@ -22,17 +22,17 @@
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="id_username" class="form-label">Tên đăng nhập:</label>
-                        {{ form.username|addclass:"form-control" }}
+                        {{ form.username }}
                     </div>
                     <div class="mb-3">
                         <label for="id_password" class="form-label">Mật khẩu:</label>
-                        {{ form.password|addclass:"form-control" }}
+                        {{ form.password }}
                     </div>
                     <input type="hidden" name="next" value="{{ next }}">
                     <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
                 </form>
                 <p class="text-center mt-3">
-                    <a href="{% url 'register' %}" class="text-decoration-none">Đăng ký tài khoản mới</a>
+                    <a href="/register/" class="text-decoration-none">Đăng ký tài khoản mới</a>
                 </p>
             </div>
         </div>

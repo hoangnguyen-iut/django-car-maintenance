@@ -1,9 +1,11 @@
 from django.urls import path
 from . import views
+from django.contrib.auth import views as auth_views
+from django.shortcuts import redirect
 
 urlpatterns = [
-    # URL cho trang chủ: rỗng nghĩa là "/"
-    path('', views.home, name='home'),
+    # Chuyển hướng trang chủ về /accounts/login/?next=/vehicles/
+    path('', lambda request: redirect('/accounts/login/?next=/vehicles/'), name='home'),
     path('vehicles/', views.vehicle_list, name='vehicle_list'),
     path('vehicles/add/', views.add_vehicle, name='add_vehicle'),
     path('maintenance/', views.maintenance_list, name='maintenance_list'),
@@ -16,4 +18,9 @@ urlpatterns = [
     path('maintenance/<int:pk>/delete/', views.delete_maintenance, name='delete_maintenance'),
     path('garage/<int:garage_id>/appointment/', views.create_appointment, name='create_appointment'),
     path('appointments/', views.appointment_list, name='appointment_list'),
+    path('login/', auth_views.LoginView.as_view(
+        template_name='core/login.html',
+        next_page='/vehicles'
+    ), name='login'),
+    path('register/', views.register, name='register'),  # Thay đổi từ accounts/register/
 ]
