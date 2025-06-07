@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import date, timedelta
 
 class Vehicle(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='vehicles')
@@ -14,11 +15,22 @@ class Vehicle(models.Model):
 class MaintenanceRecord(models.Model):
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='maintenance_records')
     ngay_bao_duong = models.DateField()  # Vietnamese field name for service_date
+    ngay_den_han = models.DateField(
+        verbose_name="Ngày đến hạn bảo dưỡng",
+        null=True,  # cho phép null cho dữ liệu cũ
+        blank=True
+    )
     noi_dung = models.TextField()        # Vietnamese field name for description
     chi_phi = models.DecimalField(max_digits=12, decimal_places=0)  # Vietnamese field name for cost
 
     def __str__(self):
         return f"{self.vehicle.bien_so} - {self.ngay_bao_duong}"
+
+    def save(self, *args, **kwargs):
+        # Tự động tính ngày đến hạn nếu chưa được set
+        if not self.ngay_den_han and self.ngay_bao_duong:
+            self.ngay_den_han = self.ngay_bao_duong + timedelta(days=365)  # mặc định 12 tháng
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Lịch sử bảo dưỡng"

@@ -27,6 +27,7 @@
                             <tr>
                                 <th>Xe</th>
                                 <th>Ngày bảo dưỡng</th>
+                                <th>Ngày đến hạn</th>
                                 <th>Nội dung</th>
                                 <th>Chi phí</th>
                                 <th>Danh mục</th>
@@ -37,6 +38,12 @@
                             <tr>
                                 <td>{{ record.vehicle.bien_so }}</td>
                                 <td>{{ record.ngay_bao_duong|date:"d/m/Y" }}</td>
+                                <td>
+                                    {{ record.ngay_den_han|date:"d/m/Y" }}
+                                    {% if record.ngay_den_han and record.ngay_den_han <= today %}
+                                        <span class="badge bg-danger">Đã đến hạn</span>
+                                    {% endif %}
+                                </td>
                                 <td>{{ record.noi_dung }}</td>
                                 <td>{{ record.chi_phi|floatformat:0 }} VNĐ</td>
                                 <td>

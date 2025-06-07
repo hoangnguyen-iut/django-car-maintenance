@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Vehicle, MaintenanceRecord, Garage, GarageService, ServiceCategory, Appointment
 from .forms import VehicleForm, MaintenanceRecordForm, AppointmentForm
 from django.contrib.auth.forms import UserCreationForm
+from datetime import date
 
 # Hiển thị danh sách xe
 @login_required
@@ -17,7 +18,11 @@ def maintenance_list(request):
     records = MaintenanceRecord.objects.filter(
         vehicle__owner=request.user
     ).order_by('-ngay_bao_duong')  # Sort by maintenance date instead
-    return render(request, 'core/maintenance_list.html', {'records': records})
+    
+    return render(request, 'core/maintenance_list.html', {
+        'records': records,
+        'today': date.today()
+    })
 
 # Hiển thị danh sách các Garage
 def garage_list(request):
