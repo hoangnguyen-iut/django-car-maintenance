@@ -31,6 +31,19 @@ class VehicleForm(forms.ModelForm):
         }
 
 class MaintenanceRecordForm(forms.ModelForm):
+    MAINTENANCE_PERIODS = [
+        (90, '3 tháng'),
+        (180, '6 tháng'),
+        (270, '9 tháng'),
+        (365, '1 năm'),
+    ]
+    
+    maintenance_period = forms.ChoiceField(
+        choices=MAINTENANCE_PERIODS,
+        label='Chu kỳ bảo dưỡng',
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+
     class Meta:
         model = MaintenanceRecord
         fields = ['vehicle', 'ngay_bao_duong', 'noi_dung', 'chi_phi']

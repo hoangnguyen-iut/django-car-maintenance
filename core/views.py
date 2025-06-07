@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Vehicle, MaintenanceRecord, Garage, GarageService, ServiceCategory, Appointment
 from .forms import VehicleForm, MaintenanceRecordForm, AppointmentForm
 from django.contrib.auth.forms import UserCreationForm
-from datetime import date
+from datetime import date, timedelta
 
 # Hiển thị danh sách xe
 @login_required
@@ -99,33 +99,37 @@ def add_maintenance(request):
     if request.method == 'POST':
         form = MaintenanceRecordForm(request.POST)
         if form.is_valid():
-            record = form.save(commit=False)
-            record.save()
-            messages.success(request, 'Đã thêm lịch sử bảo dưỡng thành công!')
+            maintenance = form.save(commit=False)
+            days = int(form.cleaned_data['maintenance_period'])
+            maintenance.ngay_den_han = maintenance.ngay_bao_duong + timedelta(days=days)
+            maintenance.save()
+            messages.success(request, 'Thêm mới lịch sử bảo dưỡng thành công!')
             return redirect('maintenance_list')
     else:
         form = MaintenanceRecordForm()
-        # Chỉ hiển thị xe của user hiện tại
-        form.fields['vehicle'].queryset = Vehicle.objects.filter(owner=request.user)
     return render(request, 'core/add_maintenance.html', {'form': form})
 
 @login_required
 def edit_maintenance(request, pk):
     record = get_object_or_404(MaintenanceRecord, pk=pk, vehicle__owner=request.user)
-    
     if request.method == 'POST':
         form = MaintenanceRecordForm(request.POST, instance=record)
         if form.is_valid():
-            form.save()
+            maintenance = form.save(commit=False)
+            days = int(form.cleaned_data['maintenance_period'])
+            maintenance.ngay_den_han = maintenance.ngay_bao_duong + timedelta(days=days)
+            maintenance.save()
             messages.success(request, 'Cập nhật thành công!')
             return redirect('maintenance_list')
     else:
-        form = MaintenanceRecordForm(instance=record)
-        
-    return render(request, 'core/edit_maintenance.html', {
-        'form': form,
-        'record': record
-    })
+        # Tính ngược lại số ngày để chọn chu kỳ
+        if record.ngay_den_han and record.ngay_bao_duong:
+            days = (record.ngay_den_han - record.ngay_bao_duong).days
+            initial_period = min((p[0] for p in MaintenanceRecordForm.MAINTENANCE_PERIODS if p[0] >= days), default=365)
+        else:
+            initial_period = 180
+        form = MaintenanceRecordForm(instance=record, initial={'maintenance_period': initial_period})
+    return render(request, 'core/edit_maintenance.html', {'form': form})
 
 @login_required
 def delete_maintenance(request, pk):
