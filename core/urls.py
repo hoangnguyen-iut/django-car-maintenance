@@ -4,8 +4,8 @@ from django.contrib.auth import views as auth_views
 from django.shortcuts import redirect
 
 urlpatterns = [
-    # Chuyển hướng về /login thay vì /accounts/login
-    path('', lambda request: redirect('/login/?next=/vehicles/'), name='home'),
+    # Chuyển hướng về trang chào mừng thay vì trang đăng nhập
+    path('', lambda request: redirect('welcome'), name='home'),
     path('vehicles/', views.vehicle_list, name='vehicle_list'),
     path('vehicles/add/', views.add_vehicle, name='add_vehicle'),
     path('maintenance/', views.maintenance_list, name='maintenance_list'),
