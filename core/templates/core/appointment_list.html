@@ -22,42 +22,44 @@
                             <th><i class="fas fa-clock"></i> Thời gian</th>
                             <th><i class="fas fa-info-circle"></i> Trạng thái</th>
                             <th><i class="fas fa-comment"></i> Ghi chú</th>
+                            <th><i class="fas fa-exclamation-circle"></i> Lý do từ chối</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for appointment in appointments %}
-                        <tr>
+                        <tr {% if appointment.trang_thai == 'Từ chối' %}class="table-danger"{% endif %}>
                             <td>
                                 <strong>{{ appointment.vehicle.bien_so }}</strong>
-                                <br>
-                                <small class="text-muted">{{ appointment.vehicle.hieu_xe }}</small>
                             </td>
                             <td>
-                                <strong>{{ appointment.garage.ten_garage }}</strong>
-                                <br>
+                                <strong>{{ appointment.garage.ten_garage }}</strong><br>
                                 <small class="text-muted">{{ appointment.garage.dia_chi }}</small>
                             </td>
                             <td>
-                                <strong>{{ appointment.ngay_gio|date:"d/m/Y" }}</strong>
-                                <br>
+                                <strong>{{ appointment.ngay_gio|date:"d/m/Y" }}</strong><br>
                                 <small class="text-muted">{{ appointment.ngay_gio|date:"H:i" }}</small>
                             </td>
                             <td>
-                                {% if appointment.trang_thai == 'Chờ xác nhận' %}
-                                <span class="badge bg-warning">{{ appointment.trang_thai }}</span>
-                                {% elif appointment.trang_thai == 'Đã xác nhận' %}
-                                <span class="badge bg-success">{{ appointment.trang_thai }}</span>
-                                {% elif appointment.trang_thai == 'Đã hủy' %}
-                                <span class="badge bg-danger">{{ appointment.trang_thai }}</span>
+                                {% if appointment.trang_thai == 'rejected' %}
+                                    <span class="badge bg-danger">Từ chối</span>
+                                {% elif appointment.trang_thai == 'confirmed' %}
+                                    <span class="badge bg-success">Đã xác nhận</span>
+                                {% elif appointment.trang_thai == 'pending' %}
+                                    <span class="badge bg-warning">Chờ xác nhận</span>
+                                {% elif appointment.trang_thai == 'completed' %}
+                                    <span class="badge bg-info">Hoàn thành</span>
+                                {% elif appointment.trang_thai == 'cancelled' %}
+                                    <span class="badge bg-secondary">Đã hủy</span>
                                 {% else %}
-                                <span class="badge bg-secondary">{{ appointment.trang_thai }}</span>
+                                    <span class="badge bg-secondary">{{ appointment.trang_thai }}</span>
                                 {% endif %}
                             </td>
+                            <td>{{ appointment.ghi_chu|default:"Không có ghi chú" }}</td>
                             <td>
-                                {% if appointment.ghi_chu %}
-                                {{ appointment.ghi_chu }}
+                                {% if appointment.trang_thai == 'rejected' %}
+                                    <div class="text-danger">{{ appointment.ly_do }}</div>
                                 {% else %}
-                                <em class="text-muted">Không có ghi chú</em>
+                                    -
                                 {% endif %}
                             </td>
                         </tr>

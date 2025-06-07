@@ -1,0 +1,75 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Quản lý lịch hẹn</h2>
+    <div class="card">
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Khách hàng</th>
+                        <th>Xe</th>
+                        <th>Thời gian</th>
+                        <th>Ghi chú</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in appointments %}
+                    <tr>
+                        <td>{{ appointment.user.username }}</td>
+                        <td>{{ appointment.vehicle.bien_so }}</td>
+                        <td>{{ appointment.ngay_gio|date:"d/m/Y H:i" }}</td>
+                        <td>{{ appointment.ghi_chu }}</td>
+                        <td>{{ appointment.get_trang_thai_display }}</td>
+                        <td>
+                            {% if appointment.trang_thai == 'pending' %}
+                            <form method="post" action="{% url 'update_appointment_status' appointment.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="status" value="confirmed">
+                                <button type="submit" class="btn btn-success btn-sm">Xác nhận</button>
+                            </form>
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" 
+                                    data-bs-target="#rejectModal{{ appointment.pk }}">
+                                Từ chối
+                            </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Rejection Modal -->
+{% for appointment in appointments %}
+<div class="modal fade" id="rejectModal{{ appointment.pk }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{% url 'update_appointment_status' appointment.pk %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">Từ chối lịch hẹn</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="status" value="rejected">
+                    <div class="mb-3">
+                        <label for="ly_do" class="form-label">Lý do từ chối:</label>
+                        <textarea name="ly_do" class="form-control" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-danger">Xác nhận từ chối</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

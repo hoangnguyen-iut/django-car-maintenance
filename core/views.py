@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Vehicle, MaintenanceRecord, Garage, GarageService, ServiceCategory, Appointment
 from .forms import VehicleForm, MaintenanceRecordForm, AppointmentForm
 from django.contrib.auth.forms import UserCreationForm
@@ -158,7 +158,7 @@ def create_appointment(request, garage_id):
             appointment = form.save(commit=False)
             appointment.user = request.user
             appointment.garage = garage
-            appointment.trang_thai = 'Chờ xác nhận'
+            appointment.trang_thai = 'Chờ xác nhận'  # Updated to match model's status
             appointment.save()
             messages.success(request, 'Đặt lịch hẹn thành công!')
             return redirect('appointment_list')
@@ -180,3 +180,62 @@ def appointment_list(request):
     return render(request, 'core/appointment_list.html', {
         'appointments': appointments
     })
+
+def is_garage_staff(user):
+    return hasattr(user, 'userprofile') and user.userprofile.user_type == 'garage_staff'
+
+@user_passes_test(is_garage_staff)
+def manage_appointments(request):
+    garage = request.user.userprofile.garage
+    appointments = Appointment.objects.filter(garage=garage).order_by('-ngay_gio')
+    return render(request, 'core/manage_appointments.html', {'appointments': appointments})
+
+@user_passes_test(is_garage_staff)
+def update_appointment_status(request, pk):
+    appointment = get_object_or_404(Appointment, pk=pk, garage=request.user.userprofile.garage)
+    if request.method == 'POST':
+        status = request.POST.get('status')
+        ly_do = request.POST.get('ly_do', '')
+        appointment.trang_thai = status
+        appointment.ly_do = ly_do
+        appointment.save()
+        messages.success(request, 'Cập nhật trạng thái lịch hẹn thành công!')
+    return redirect('manage_appointments')
+
+@user_passes_test(lambda u: hasattr(u, 'userprofile') and u.userprofile.user_type == 'garage_staff')
+def garage_dashboard(request):
+    garage = request.user.userprofile.garage
+    pending_appointments = Appointment.objects.filter(
+        garage=garage,
+        trang_thai='Chờ xác nhận'  # Updated to match model's status
+    ).select_related('user', 'vehicle').order_by('ngay_gio')
+    
+    # Debug print
+    print(f"Searching appointments for garage: {garage}")
+    print(f"Found appointments: {pending_appointments.count()}")
+    print(f"All appointments statuses: {list(Appointment.objects.filter(garage=garage).values_list('trang_thai', flat=True))}")
+    
+    return render(request, 'core/garage_dashboard.html', {
+        'appointments': pending_appointments,
+        'garage': garage
+    })
+
+from django.views.decorators.http import require_POST
+
+@require_POST
+@user_passes_test(lambda u: hasattr(u, 'userprofile') and u.userprofile.user_type == 'garage_staff')
+def handle_appointment(request, appointment_id):
+    garage = request.user.userprofile.garage
+    appointment = get_object_or_404(Appointment, id=appointment_id, garage=garage)
+    action = request.POST.get('action')
+    
+    if action == 'confirm':
+        appointment.trang_thai = 'confirmed'
+        messages.success(request, 'Đã xác nhận lịch hẹn')
+    elif action == 'reject':
+        appointment.trang_thai = 'rejected'
+        appointment.ly_do = request.POST.get('ly_do', '')
+        messages.warning(request, 'Đã từ chối lịch hẹn')
+    
+    appointment.save()
+    return redirect('garage_dashboard')
