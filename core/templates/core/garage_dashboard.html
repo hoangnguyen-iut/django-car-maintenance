@@ -1,0 +1,100 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Quản lý lịch hẹn - {{ garage.ten_garage }}</h2>
+    
+    <!-- Debug info -->
+    {% if user.userprofile.garage %}
+        <div class="alert alert-info">
+            Garage: {{ user.userprofile.garage.ten_garage }}
+        </div>
+    {% endif %}
+    
+    {% if appointments %}
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Khách hàng</th>
+                            <th>Xe</th>
+                            <th>Thời gian</th>
+                            <th>Ghi chú</th>
+                            <th>Trạng thái</th>
+                            <th>Lý do từ chối</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in appointments %}
+                        <tr>
+                            <td>{{ appointment.user.username }}</td>
+                            <td>
+                                <strong>{{ appointment.vehicle.bien_so }}</strong><br>
+                                <small class="text-muted">{{ appointment.vehicle.hang_xe }} {{ appointment.vehicle.dong_xe }}</small>
+                            </td>
+                            <td>{{ appointment.ngay_gio|date:"d/m/Y H:i" }}</td>
+                            <td>{{ appointment.ghi_chu|default:"Không có ghi chú" }}</td>
+                            <td>
+                                <span class="badge bg-warning">{{ appointment.get_trang_thai_display }}</span>
+                            </td>
+                            <td>{{ appointment.ly_do|default:"-" }}</td>
+                            <td>
+                                <form method="post" action="{% url 'handle_appointment' appointment.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="confirm">
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="fas fa-check"></i> Xác nhận
+                                    </button>
+                                </form>
+                                <button type="button" class="btn btn-danger btn-sm" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#rejectModal{{ appointment.id }}">
+                                    <i class="fas fa-times"></i> Từ chối
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <p>Không có lịch hẹn nào đang chờ xác nhận</p>
+        <small>Debug: Garage ID: {{ garage.id }}</small>
+    </div>
+    {% endif %}
+</div>
+
+{% for appointment in appointments %}
+<!-- Modal for rejection -->
+<div class="modal fade" id="rejectModal{{ appointment.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{% url 'handle_appointment' appointment.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="reject">
+                <div class="modal-header">
+                    <h5 class="modal-title">Từ chối lịch hẹn</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Lý do từ chối:</label>
+                        <textarea name="ly_do" class="form-control" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-danger">Xác nhận từ chối</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

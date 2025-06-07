@@ -27,4 +27,12 @@ urlpatterns = [
         next_page='/login/',
         template_name='core/login.html'
     ), name='logout'),
+    path('garage/appointments/', views.manage_appointments, name='manage_appointments'),
+    path('garage/appointments/<int:pk>/update/', views.update_appointment_status, name='update_appointment_status'),
+    path('garage/dashboard/', views.garage_dashboard, name='garage_dashboard'),
+    path('garage/appointment/<int:appointment_id>/', views.handle_appointment, name='handle_appointment'),
+    # Comment out or remove duplicate login/register URLs
+    # path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
+    # path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
+    # path('accounts/register/', views.register, name='register'),
 ]

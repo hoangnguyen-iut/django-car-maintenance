@@ -56,8 +56,16 @@ class Appointment(models.Model):
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='appointments')
     garage = models.ForeignKey(Garage, on_delete=models.CASCADE, related_name='appointments')
     ngay_gio = models.DateTimeField()
-    trang_thai = models.CharField(max_length=50, default='Chờ xác nhận')
+    APPOINTMENT_STATUS = [
+        ('Chờ xác nhận', 'Chờ xác nhận'),  # Changed from 'pending'
+        ('Đã xác nhận', 'Đã xác nhận'),     # Changed from 'confirmed'
+        ('Từ chối', 'Từ chối'),             # Changed from 'rejected'
+        ('Hoàn thành', 'Hoàn thành'),       # Changed from 'completed'
+        ('Đã hủy', 'Đã hủy'),               # Changed from 'cancelled'
+    ]
+    trang_thai = models.CharField(max_length=20, choices=APPOINTMENT_STATUS, default='Chờ xác nhận')
     ghi_chu = models.TextField(blank=True, null=True)
+    ly_do = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"Lịch hẹn: {self.vehicle.bien_so} tại {self.garage.ten_garage} vào {self.ngay_gio}"
@@ -88,3 +96,12 @@ class GarageService(models.Model):
     class Meta:
         verbose_name = "Dịch vụ của Garage"
         verbose_name_plural = "Dịch vụ của Garage"
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    USER_TYPES = [
+        ('customer', 'Khách hàng'),
+        ('garage_staff', 'Nhân viên Garage'),
+    ]
+    user_type = models.CharField(max_length=20, choices=USER_TYPES, default='customer')
+    garage = models.ForeignKey(Garage, on_delete=models.SET_NULL, null=True, blank=True)

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Vehicle, MaintenanceRecord, Garage, Appointment, ServiceCategory, GarageService
+from .models import Vehicle, MaintenanceRecord, Garage, Appointment, ServiceCategory, GarageService, UserProfile
 
 admin.site.register(Vehicle)
 
@@ -9,6 +9,8 @@ admin.site.register(MaintenanceRecord)
 admin.site.register(Garage)
 
 admin.site.register(Appointment)
+
+admin.site.register(UserProfile)
 
 @admin.register(ServiceCategory)
 class ServiceCategoryAdmin(admin.ModelAdmin):
