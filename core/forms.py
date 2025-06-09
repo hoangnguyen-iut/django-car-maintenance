@@ -46,6 +46,7 @@ class MaintenanceRecordForm(forms.ModelForm):
     )
 
     class Meta:
+        """ Meta class for MaintenanceRecord form configuration."""
         model = MaintenanceRecord
         fields = ['vehicle', 'ngay_bao_duong', 'noi_dung', 'chi_phi', 'maintenance_period']
         labels = {
