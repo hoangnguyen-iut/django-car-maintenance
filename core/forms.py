@@ -2,6 +2,7 @@ from django import forms
 from .models import Vehicle, MaintenanceRecord, Appointment
 
 class VehicleForm(forms.ModelForm):
+    """Form quản lý thông tin xe."""
     class Meta:
         model = Vehicle
         fields = ['bien_so', 'hang_xe', 'dong_xe', 'nam_san_xuat']
@@ -31,6 +32,7 @@ class VehicleForm(forms.ModelForm):
         }
 
 class MaintenanceRecordForm(forms.ModelForm):
+    """Form quản lý thông tin bảo dưỡng xe."""
     MAINTENANCE_PERIODS = [
         (90, '3 tháng'),
         (180, '6 tháng'),
@@ -66,6 +68,7 @@ class MaintenanceRecordForm(forms.ModelForm):
         }
 
 class AppointmentForm(forms.ModelForm):
+    """Form đặt lịch hẹn bảo dưỡng xe."""
     class Meta:
         model = Appointment
         fields = ['vehicle', 'ngay_gio', 'ghi_chu']

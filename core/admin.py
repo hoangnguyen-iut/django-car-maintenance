@@ -14,11 +14,13 @@ admin.site.register(UserProfile)
 
 @admin.register(ServiceCategory)
 class ServiceCategoryAdmin(admin.ModelAdmin):
+    """Quản lý danh mục dịch vụ trong trang admin."""
     list_display = ['ten', 'mo_ta']
     search_fields = ['ten']
 
 @admin.register(GarageService)
 class GarageServiceAdmin(admin.ModelAdmin):
+    """Quản lý chi tiết dịch vụ của garage trong trang admin."""
     list_display = ['garage', 'danh_muc', 'ten_dich_vu', 'gia', 'trang_thai']
     list_filter = ['garage', 'danh_muc', 'trang_thai']
     search_fields = ['ten_dich_vu', 'mo_ta']

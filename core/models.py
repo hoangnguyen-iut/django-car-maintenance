@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from datetime import date, timedelta
 
 class Vehicle(models.Model):
+    """Model quản lý thông tin xe."""
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='vehicles')
     bien_so = models.CharField(max_length=20, unique=True)
     hang_xe = models.CharField(max_length=50)
@@ -10,27 +11,29 @@ class Vehicle(models.Model):
     nam_san_xuat = models.IntegerField()
 
     def __str__(self):
+        """Trả về chuỗi đại diện cho xe."""
         return f"{self.hang_xe} {self.dong_xe} - {self.bien_so}"
 
 class MaintenanceRecord(models.Model):
+    """Model quản lý lịch sử bảo dưỡng xe."""
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='maintenance_records')
-    ngay_bao_duong = models.DateField()  # Vietnamese field name for service_date
+    ngay_bao_duong = models.DateField(verbose_name="Ngày bảo dưỡng") 
     ngay_den_han = models.DateField(
         verbose_name="Ngày đến hạn bảo dưỡng",
         null=True,  # cho phép null cho dữ liệu cũ
         blank=True
     )
-    noi_dung = models.TextField()        # Vietnamese field name for description
-    chi_phi = models.DecimalField(max_digits=12, decimal_places=0)  # Vietnamese field name for cost
-    maintenance_period = models.IntegerField(default=90)  # Add default value
+    noi_dung = models.TextField()       
+    chi_phi = models.DecimalField(max_digits=12, decimal_places=0)  
+    maintenance_period = models.IntegerField(default=90)  
 
     def __str__(self):
         return f"{self.vehicle.bien_so} - {self.ngay_bao_duong}"
 
     def save(self, *args, **kwargs):
-        # Tự động tính ngày đến hạn nếu chưa được set
+        """Tự động tính ngày đến hạn bảo dưỡng tiếp theo."""
         if not self.ngay_den_han and self.ngay_bao_duong:
-            self.ngay_den_han = self.ngay_bao_duong + timedelta(days=365)  # mặc định 12 tháng
+            self.ngay_den_han = self.ngay_bao_duong + timedelta(days=365)
         super().save(*args, **kwargs)
 
     class Meta:
@@ -38,6 +41,7 @@ class MaintenanceRecord(models.Model):
         verbose_name_plural = "Lịch sử bảo dưỡng"
 
 class Garage(models.Model):
+    """Model quản lý thông tin garage."""
     ten_garage = models.CharField(max_length=100)
     dia_chi = models.CharField(max_length=200, default="Đang cập nhật")
     so_dien_thoai = models.CharField(max_length=20, default="Đang cập nhật")
@@ -45,6 +49,7 @@ class Garage(models.Model):
     mo_ta = models.TextField(blank=True, null=True)
 
     def __str__(self):
+        """Trả về tên garage."""
         return self.ten_garage
 
     class Meta:
@@ -52,29 +57,33 @@ class Garage(models.Model):
         verbose_name_plural = "Danh sách Garage"
 
 class Appointment(models.Model):
+    """Model quản lý lịch hẹn bảo dưỡng."""
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointments')
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='appointments')
     garage = models.ForeignKey(Garage, on_delete=models.CASCADE, related_name='appointments')
     ngay_gio = models.DateTimeField()
     APPOINTMENT_STATUS = [
-        ('Chờ xác nhận', 'Chờ xác nhận'),  # Changed from 'pending'
-        ('Đã xác nhận', 'Đã xác nhận'),     # Changed from 'confirmed'
-        ('Từ chối', 'Từ chối'),             # Changed from 'rejected'
-        ('Hoàn thành', 'Hoàn thành'),       # Changed from 'completed'
-        ('Đã hủy', 'Đã hủy'),               # Changed from 'cancelled'
+        ('Chờ xác nhận', 'Chờ xác nhận'),  
+        ('Đã xác nhận', 'Đã xác nhận'),    
+        ('Từ chối', 'Từ chối'),           
+        ('Hoàn thành', 'Hoàn thành'),      
+        ('Đã hủy', 'Đã hủy'),               
     ]
     trang_thai = models.CharField(max_length=20, choices=APPOINTMENT_STATUS, default='Chờ xác nhận')
     ghi_chu = models.TextField(blank=True, null=True)
     ly_do = models.TextField(blank=True, null=True)
 
     def __str__(self):
+        """Trả về thông tin chi tiết lịch hẹn."""
         return f"Lịch hẹn: {self.vehicle.bien_so} tại {self.garage.ten_garage} vào {self.ngay_gio}"
 
 class ServiceCategory(models.Model):
+    """Model quản lý danh mục dịch vụ."""
     ten = models.CharField(max_length=100)
     mo_ta = models.TextField(blank=True, null=True)
 
     def __str__(self):
+        """Trả về tên danh mục."""
         return self.ten
 
     class Meta:
@@ -82,6 +91,7 @@ class ServiceCategory(models.Model):
         verbose_name_plural = "Danh mục dịch vụ"
 
 class GarageService(models.Model):
+    """Model quản lý chi tiết dịch vụ của từng garage."""
     garage = models.ForeignKey('Garage', on_delete=models.CASCADE, related_name='chi_tiet_dich_vu')
     danh_muc = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE)
     ten_dich_vu = models.CharField(max_length=200)
@@ -91,6 +101,7 @@ class GarageService(models.Model):
     trang_thai = models.BooleanField(default=True)
 
     def __str__(self):
+        """Trả về thông tin dịch vụ của garage."""
         return f"{self.garage.ten_garage} - {self.ten_dich_vu}"
 
     class Meta:
@@ -98,6 +109,7 @@ class GarageService(models.Model):
         verbose_name_plural = "Dịch vụ của Garage"
 
 class UserProfile(models.Model):
+    """Model mở rộng thông tin người dùng."""
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     USER_TYPES = [
         ('customer', 'Khách hàng'),

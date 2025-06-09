@@ -2,6 +2,7 @@ from datetime import datetime
 from .models import MaintenanceRecord
 
 def notification_processor(request):
+    """Xử lý và trả về thông báo về các lịch bảo dưỡng đã quá hạn."""
     if not request.user.is_authenticated:
         return {'notifications': []}
     
