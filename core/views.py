@@ -6,15 +6,17 @@ from .forms import VehicleForm, MaintenanceRecordForm, AppointmentForm
 from django.contrib.auth.forms import UserCreationForm
 from datetime import date, timedelta, datetime
 
+
 @login_required
 def vehicle_list(request):
-    """Hiển thị danh sách xe của người dùng hiện tại."""
+    """Hiển thị danh sách xe của người dùng"""
     vehicles = Vehicle.objects.filter(owner=request.user)
     return render(request, 'core/vehicle_list.html', {'vehicles': vehicles})
 
-@login_required 
+
+@login_required
 def maintenance_list(request):
-    """Hiển thị danh sách và tình trạng bảo dưỡng của các xe."""
+    """Hiển thị danh sách bảo dưỡng của người dùng"""
     today = datetime.now().date()
     records = MaintenanceRecord.objects.filter(
         vehicle__owner=request.user
@@ -30,14 +32,15 @@ def maintenance_list(request):
         'today': today,
     })
 
+"""Hiển thị danh sách Garage"""        
 def garage_list(request):
-    """Hiển thị danh sách tất cả các garage."""
     garages = Garage.objects.all()
     return render(request, 'core/garage_list.html', {'garages': garages})
 
+
 @login_required
 def add_vehicle(request):
-    """Xử lý thêm mới xe cho người dùng."""
+    """Thêm xe mới cho người dùng"""
     if request.method == 'POST':
         form = VehicleForm(request.POST)
         if form.is_valid():
@@ -52,7 +55,7 @@ def add_vehicle(request):
 
 @login_required
 def edit_vehicle(request, pk):
-    """Cập nhật thông tin xe theo ID."""
+    """Chỉnh sửa thông tin xe của người dùng"""
     vehicle = get_object_or_404(Vehicle, pk=pk, owner=request.user)
     if request.method == 'POST':
         form = VehicleForm(request.POST, instance=vehicle)
@@ -66,7 +69,7 @@ def edit_vehicle(request, pk):
 
 @login_required
 def delete_vehicle(request, pk):
-    """Xóa xe theo ID."""
+    """Xóa xe của người dùng"""
     vehicle = get_object_or_404(Vehicle, pk=pk, owner=request.user)
     if request.method == 'POST':
         vehicle.delete()
@@ -75,11 +78,11 @@ def delete_vehicle(request, pk):
     return render(request, 'core/delete_vehicle.html', {'vehicle': vehicle})
 
 def home(request):
-    """Chuyển hướng về trang đăng nhập admin."""
+    """Chuyển hướng về trang đăng nhập admin của Django"""
     return redirect('/admin/login/')
 
 def register(request):
-    """Xử lý đăng ký tài khoản mới."""
+    """Đăng ký tài khoản người dùng mới"""
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -91,7 +94,7 @@ def register(request):
     return render(request, 'core/register.html', {'form': form})
 
 def garage_detail(request, pk):
-    """Hiển thị chi tiết garage và các dịch vụ."""
+    """Hiển thị chi tiết Garage và các dịch vụ"""
     garage = get_object_or_404(Garage, pk=pk)
     services = GarageService.objects.filter(garage=garage, trang_thai=True)
     categories = ServiceCategory.objects.filter(garageservice__garage=garage).distinct()
@@ -105,8 +108,8 @@ def garage_detail(request, pk):
 
 @login_required
 def add_maintenance(request):
-    """Thêm mới lịch sử bảo dưỡng cho xe."""
-    # Kiểm tra xem người dùng có xe nào không
+    """Thêm lịch sử bảo dưỡng cho xe"""
+    """Kiểm tra xem người dùng đã có xe nào chưa"""
     user_vehicles = Vehicle.objects.filter(owner=request.user)
     if not user_vehicles.exists():
         messages.warning(request, 'Bạn cần thêm ít nhất một xe trước khi thêm lịch sử bảo dưỡng!')
@@ -123,14 +126,14 @@ def add_maintenance(request):
             return redirect('maintenance_list')
     else:
         form = MaintenanceRecordForm()
-        # Lọc xe cho người dùng hiện tại
+        # Filter vehicles for current user
         form.fields['vehicle'].queryset = user_vehicles
 
     return render(request, 'core/add_maintenance.html', {'form': form})
 
 @login_required
 def edit_maintenance(request, pk):
-    """Cập nhật thông tin bảo dưỡng theo ID."""
+    """Chỉnh sửa lịch sử bảo dưỡng"""
     record = get_object_or_404(MaintenanceRecord, pk=pk, vehicle__owner=request.user)
     if request.method == 'POST':
         form = MaintenanceRecordForm(request.POST, instance=record)
@@ -153,7 +156,7 @@ def edit_maintenance(request, pk):
 
 @login_required
 def delete_maintenance(request, pk):
-    """Xóa lịch sử bảo dưỡng theo ID."""
+    """Xóa lịch sử bảo dưỡng"""
     record = get_object_or_404(MaintenanceRecord, pk=pk, vehicle__owner=request.user)
     if request.method == 'POST':
         record.delete()
@@ -163,7 +166,7 @@ def delete_maintenance(request, pk):
 
 @login_required
 def create_appointment(request, garage_id):
-    """Tạo lịch hẹn mới với garage."""
+
     garage = get_object_or_404(Garage, pk=garage_id)
     
     if request.method == 'POST':
@@ -172,7 +175,7 @@ def create_appointment(request, garage_id):
             appointment = form.save(commit=False)
             appointment.user = request.user
             appointment.garage = garage
-            appointment.trang_thai = 'Đang chờ xác nhận'  # Cập nhật trạng thái
+            appointment.trang_thai = 'Chờ xác nhận'  # Updated to match model's status
             appointment.save()
             messages.success(request, 'Đặt lịch hẹn thành công!')
             return redirect('appointment_list')
@@ -188,7 +191,7 @@ def create_appointment(request, garage_id):
 
 @login_required
 def appointment_list(request):
-    """Hiển thị danh sách lịch hẹn của người dùng."""
+    """Hiển thị danh sách lịch hẹn của người dùng"""
     appointments = Appointment.objects.filter(
         user=request.user
     ).order_by('-ngay_gio')
@@ -197,19 +200,19 @@ def appointment_list(request):
     })
 
 def is_garage_staff(user):
-    """Kiểm tra người dùng có phải là nhân viên garage."""
+    """Kiểm tra xem người dùng có phải là nhân viên Garage hay không"""
     return hasattr(user, 'userprofile') and user.userprofile.user_type == 'garage_staff'
 
 @user_passes_test(is_garage_staff)
 def manage_appointments(request):
-    """Quản lý lịch hẹn cho nhân viên garage."""
+    """Quản lý lịch hẹn của Garage"""
     garage = request.user.userprofile.garage
     appointments = Appointment.objects.filter(garage=garage).order_by('-ngay_gio')
     return render(request, 'core/manage_appointments.html', {'appointments': appointments})
 
 @user_passes_test(is_garage_staff)
 def update_appointment_status(request, pk):
-    """Cập nhật trạng thái lịch hẹn."""
+    """Cập nhật trạng thái lịch hẹn"""    
     appointment = get_object_or_404(Appointment, pk=pk, garage=request.user.userprofile.garage)
     if request.method == 'POST':
         status = request.POST.get('status')
@@ -222,11 +225,12 @@ def update_appointment_status(request, pk):
 
 @user_passes_test(lambda u: hasattr(u, 'userprofile') and u.userprofile.user_type == 'garage_staff')
 def garage_dashboard(request):
-    """Hiển thị bảng điều khiển cho nhân viên garage."""
+    """Hiển thị bảng điều khiển của Garage với các lịch hẹn chờ xác nhận"""
+    """Chỉ hiển thị các lịch hẹn có trạng thái 'Chờ xác nhận'"""
     garage = request.user.userprofile.garage
     pending_appointments = Appointment.objects.filter(
         garage=garage,
-        trang_thai='Chờ xác nhận'  # Cập nhật trạng thái xác nhận
+        trang_thai='Chờ xác nhận' 
     ).select_related('user', 'vehicle').order_by('ngay_gio')
     
     # Debug print
@@ -244,7 +248,8 @@ from django.views.decorators.http import require_POST
 @require_POST
 @user_passes_test(lambda u: hasattr(u, 'userprofile') and u.userprofile.user_type == 'garage_staff')
 def handle_appointment(request, appointment_id):
-    """Xử lý xác nhận hoặc từ chối lịch hẹn."""
+    """Xử lý lịch hẹn từ bảng điều khiển của Garage"""
+    """Xác nhận hoặc từ chối lịch hẹn"""
     garage = request.user.userprofile.garage
     appointment = get_object_or_404(Appointment, id=appointment_id, garage=garage)
     action = request.POST.get('action')
@@ -261,5 +266,5 @@ def handle_appointment(request, appointment_id):
     return redirect('garage_dashboard')
 
 def welcome(request):
-    """Hiển thị trang chào mừng."""
+    """Trang chào mừng"""
     return render(request, 'core/welcome.html')
