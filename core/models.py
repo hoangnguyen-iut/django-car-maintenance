@@ -26,6 +26,10 @@ class MaintenanceRecord(models.Model):
     noi_dung = models.TextField()      
     chi_phi = models.DecimalField(max_digits=12, decimal_places=0)  
     maintenance_period = models.IntegerField(default=90)  
+    is_point_approved = models.BooleanField(
+        default=False,
+        verbose_name="Duyệt điểm tích lũy"
+    )
 
     def __str__(self):
         """Trả về chuỗi đại diện cho lịch sử bảo dưỡng."""
@@ -36,6 +40,21 @@ class MaintenanceRecord(models.Model):
         if not self.ngay_den_han and self.ngay_bao_duong:
             self.ngay_den_han = self.ngay_bao_duong + timedelta(days=365)  # mặc định 12 tháng
         super().save(*args, **kwargs)
+
+    @property
+    def days_remaining(self):
+        """Tính số ngày còn lại đến hạn bảo dưỡng."""
+        if not self.ngay_den_han:
+            return None
+        return (self.ngay_den_han - date.today()).days
+        
+    @property
+    def days_overdue(self):
+        """Tính số ngày đã quá hạn."""
+        if not self.ngay_den_han:
+            return None
+        days = self.days_remaining
+        return abs(days) if days < 0 else 0
 
     class Meta:
         verbose_name = "Lịch sử bảo dưỡng"
@@ -118,3 +137,4 @@ class UserProfile(models.Model):
     ]
     user_type = models.CharField(max_length=20, choices=USER_TYPES, default='customer')
     garage = models.ForeignKey(Garage, on_delete=models.SET_NULL, null=True, blank=True)
+    loyalty_points = models.IntegerField(default=0, verbose_name="Điểm tích lũy")

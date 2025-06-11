@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .models import Vehicle, MaintenanceRecord, Garage, GarageService, ServiceCategory, Appointment
+from .models import Vehicle, MaintenanceRecord, Garage, GarageService, ServiceCategory, Appointment, UserProfile
 from .forms import VehicleForm, MaintenanceRecordForm, AppointmentForm
 from django.contrib.auth.forms import UserCreationForm
 from datetime import date, timedelta, datetime
@@ -14,22 +14,22 @@ def vehicle_list(request):
     return render(request, 'core/vehicle_list.html', {'vehicles': vehicles})
 
 
-@login_required
+@login_required 
 def maintenance_list(request):
-    """Hiển thị danh sách bảo dưỡng của người dùng"""
-    today = datetime.now().date()
+    """Hiển thị danh sách bảo dưỡng và điểm tích lũy."""
     records = MaintenanceRecord.objects.filter(
         vehicle__owner=request.user
     ).order_by('-ngay_bao_duong')
     
-    for record in records:
-        if record.ngay_den_han:
-            days_diff = (record.ngay_den_han - today).days
-            record.days_remaining = days_diff
+    # Lấy hoặc tạo profile cho user
+    profile, created = UserProfile.objects.get_or_create(
+        user=request.user,
+        defaults={'loyalty_points': 0}
+    )
     
     return render(request, 'core/maintenance_list.html', {
         'records': records,
-        'today': today,
+        'total_points': profile.loyalty_points
     })
 
 """Hiển thị danh sách Garage"""        

@@ -11,6 +11,14 @@
 
     {% block content %}
     <div class="container mt-4">
+        <!-- Hiển thị tổng điểm -->
+        <div class="alert alert-info mb-4">
+            <p class="mb-0">
+                <i class="fas fa-star"></i> 
+                Điểm tích lũy của bạn: <strong>{{ total_points }}</strong> điểm
+            </p>
+        </div>
+
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Lịch Sử Bảo Dưỡng</h2>
             <a href="{% url 'add_maintenance' %}" class="btn btn-primary">
@@ -18,6 +26,7 @@
             </a>
         </div>
 
+        <!-- Danh sách bảo dưỡng -->
         {% if records %}
         <div class="card">
             <div class="card-body">
@@ -31,6 +40,7 @@
                                 <th>Nội dung</th>
                                 <th>Chi phí</th>
                                 <th>Danh mục</th>
+                                <th>Trạng thái tích điểm</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -69,6 +79,13 @@
                                        class="btn btn-sm btn-danger">
                                         <i class="fas fa-trash"></i> Xóa
                                     </a>
+                                </td>
+                                <td>
+                                    {% if record.is_point_approved %}
+                                        <span class="badge bg-success">✅ Đã duyệt</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">❌ Chưa duyệt</span>
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% endfor %}
