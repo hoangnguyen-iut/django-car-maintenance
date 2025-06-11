@@ -5,6 +5,7 @@ from .models import Vehicle, MaintenanceRecord, Garage, GarageService, ServiceCa
 from .forms import VehicleForm, MaintenanceRecordForm, AppointmentForm
 from django.contrib.auth.forms import UserCreationForm
 from datetime import date, timedelta, datetime
+from math import floor
 
 
 @login_required
@@ -156,12 +157,23 @@ def edit_maintenance(request, pk):
 
 @login_required
 def delete_maintenance(request, pk):
-    """Xóa lịch sử bảo dưỡng"""
+    """Xóa bản ghi bảo dưỡng."""
     record = get_object_or_404(MaintenanceRecord, pk=pk, vehicle__owner=request.user)
+    
     if request.method == 'POST':
+        points_to_deduct = floor(float(record.chi_phi) / 10000) if record.is_point_approved else 0
         record.delete()
-        messages.success(request, 'Đã xóa lịch sử bảo dưỡng thành công!')
+        
+        if points_to_deduct > 0:
+            messages.warning(
+                request, 
+                f'Đã xóa bản ghi bảo dưỡng. {points_to_deduct} điểm tích lũy đã bị trừ.'
+            )
+        else:
+            messages.success(request, 'Đã xóa bản ghi bảo dưỡng.')
+        
         return redirect('maintenance_list')
+    
     return render(request, 'core/delete_maintenance.html', {'record': record})
 
 @login_required

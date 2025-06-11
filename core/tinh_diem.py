@@ -31,3 +31,21 @@ def cong_diem_tich_luy(maintenance_record):
         profile.save()
         
     return points
+
+def tru_diem_tich_luy(maintenance_record):
+    """
+    Trừ điểm tích lũy khi xóa bản ghi bảo dưỡng.
+    
+    Args:
+        maintenance_record: Bản ghi bảo dưỡng bị xóa
+    """
+    if not maintenance_record.is_point_approved:
+        return
+        
+    # Tính điểm cần trừ (100.000 VND = 10 điểm)
+    points_to_deduct = floor(float(maintenance_record.chi_phi) / 10000)
+    
+    with transaction.atomic():
+        profile = maintenance_record.vehicle.owner.userprofile
+        profile.loyalty_points = max(0, profile.loyalty_points - points_to_deduct)
+        profile.save()
