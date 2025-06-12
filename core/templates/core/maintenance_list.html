@@ -44,8 +44,9 @@
                                 <th>Ngày đến hạn</th>
                                 <th>Nội dung</th>
                                 <th>Chi phí</th>
-                                <th>Danh mục</th>
+                                <th>Garage</th>
                                 <th>Trạng thái tích điểm</th>
+                                <th>Thao tác</th> <!-- Thêm cột thao tác -->
                             </tr>
                         </thead>
                         <tbody>
@@ -75,24 +76,21 @@
                                 </td>
                                 <td>{{ record.noi_dung }}</td>
                                 <td>{{ record.chi_phi|floatformat:0 }} VNĐ</td>
-                                <td>
-                                    <a href="{% url 'edit_maintenance' record.pk %}" 
-                                       class="btn btn-sm btn-warning me-2">
-                                        <i class="fas fa-edit"></i> Sửa
-                                    </a>
-                                    <a href="{% url 'delete_maintenance' record.pk %}" 
-                                       class="btn btn-sm btn-danger">
-                                        <i class="fas fa-trash"></i> Xóa
-                                    </a>
-                                </td>
+                                <td>{{ record.garage.ten_garage }}</td>
                                 <td>
                                     {% if record.is_point_approved %}
                                         <span class="badge bg-success">✅ Đã duyệt</span>
-                                    {% elif record.point_status == 'rejected' %}
-                                        <span class="badge bg-danger">❌ Bị từ chối</span>
                                     {% else %}
                                         <span class="badge bg-warning">⏳ Chờ duyệt</span>
                                     {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'edit_maintenance' record.id %}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i> Sửa
+                                    </a>
+                                    <a href="{% url 'delete_maintenance' record.id %}" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </a>
                                 </td>
                             </tr>
                             {% endfor %}

@@ -280,17 +280,14 @@ def handle_appointment(request, appointment_id):
 @user_passes_test(lambda u: hasattr(u, 'userprofile') and u.userprofile.user_type == 'garage_staff')
 def point_approvals_list(request):
     """Hiển thị danh sách chờ duyệt điểm."""
+    garage = request.user.userprofile.garage
     pending_records = MaintenanceRecord.objects.filter(
+        garage=garage,
         is_point_approved=False
     ).select_related(
-        'vehicle',  # Lấy thông tin xe
-        'vehicle__owner'  # Lấy thông tin chủ xe
+        'vehicle',
+        'vehicle__owner'
     ).order_by('-ngay_bao_duong')
-    
-    # Debug để kiểm tra dữ liệu
-    for record in pending_records:
-        print(f"Vehicle owner: {record.vehicle.owner.get_full_name()}")
-        print(f"License plate: {record.vehicle.bien_so}")
     
     return render(request, 'core/garage/point_approvals.html', {
         'records': pending_records
@@ -299,33 +296,24 @@ def point_approvals_list(request):
 @user_passes_test(lambda u: hasattr(u, 'userprofile') and u.userprofile.user_type == 'garage_staff')
 def approve_point_by_staff(request, record_id):
     """Duyệt điểm cho bản ghi bảo dưỡng."""
-    record = get_object_or_404(MaintenanceRecord, id=record_id)
+    garage = request.user.userprofile.garage
+    record = get_object_or_404(MaintenanceRecord, id=record_id, garage=garage)
     
     if record.is_point_approved:
         messages.error(request, 'Bản ghi này đã được duyệt điểm!')
         return redirect('point_approvals_list')
 
     try:
-        # Tính điểm và cộng điểm
         points = cong_diem_tich_luy(record)
-        
-        # Cập nhật trạng thái duyệt
         record.is_point_approved = True
         record.save()
 
-        # Thêm debug message
-        print(f"Duyệt điểm cho record {record.id}")
-        print(f"Điểm được cộng: {points}")
-        print(f"User: {record.vehicle.owner.username}")
-        print(f"Chi phí: {record.chi_phi}")
-        
         messages.success(
             request, 
             f'Đã duyệt và cộng {points} điểm tích lũy cho bản ghi #{record.id}'
         )
     except Exception as e:
         messages.error(request, f'Lỗi khi duyệt điểm: {str(e)}')
-        print(f"Error in approve_point_by_staff: {str(e)}")
         
     return redirect('point_approvals_list')
 

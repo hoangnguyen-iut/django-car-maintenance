@@ -46,14 +46,14 @@ class MaintenanceRecordForm(forms.ModelForm):
     )
 
     class Meta:
-        """ Meta class for MaintenanceRecord form configuration."""
         model = MaintenanceRecord
-        fields = ['vehicle', 'ngay_bao_duong', 'noi_dung', 'chi_phi', 'maintenance_period']
+        fields = ['vehicle', 'ngay_bao_duong', 'noi_dung', 'chi_phi', 'maintenance_period', 'garage']
         labels = {
             'vehicle': 'Chọn xe',
             'ngay_bao_duong': 'Ngày bảo dưỡng',
             'noi_dung': 'Nội dung bảo dưỡng',
-            'chi_phi': 'Chi phí (VNĐ)'
+            'chi_phi': 'Chi phí (VNĐ)',
+            'garage': 'Garage thực hiện'
         }
         widgets = {
             'vehicle': forms.Select(attrs={'class': 'form-control'}),
@@ -65,7 +65,8 @@ class MaintenanceRecordForm(forms.ModelForm):
                 'class': 'form-control',
                 'rows': 3
             }),
-            'chi_phi': forms.NumberInput(attrs={'class': 'form-control'})
+            'chi_phi': forms.NumberInput(attrs={'class': 'form-control'}),
+            'garage': forms.Select(attrs={'class': 'form-control'})
         }
 
 class AppointmentForm(forms.ModelForm):

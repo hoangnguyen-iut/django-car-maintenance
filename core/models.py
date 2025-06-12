@@ -41,6 +41,12 @@ class MaintenanceRecord(models.Model):
         default='pending',
         verbose_name='Trạng thái tích điểm'
     )
+    garage = models.ForeignKey(
+        'Garage',
+        on_delete=models.CASCADE,
+        null=True,
+        verbose_name="Garage thực hiện"
+    )
 
     def __str__(self):
         """Trả về chuỗi đại diện cho lịch sử bảo dưỡng."""
