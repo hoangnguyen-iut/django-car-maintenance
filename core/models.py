@@ -149,3 +149,17 @@ class UserProfile(models.Model):
     user_type = models.CharField(max_length=20, choices=USER_TYPES, default='customer')
     garage = models.ForeignKey(Garage, on_delete=models.SET_NULL, null=True, blank=True)
     loyalty_points = models.IntegerField(default=0, verbose_name="Điểm tích lũy")
+
+class PointHistory(models.Model):
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    maintenance_record = models.ForeignKey('MaintenanceRecord', on_delete=models.SET_NULL, null=True)
+    points = models.IntegerField()  # Số điểm (dương là cộng, âm là trừ)
+    action = models.CharField(max_length=20, choices=[
+        ('add', 'Cộng điểm'),
+        ('deduct', 'Trừ điểm'),
+    ])
+    created_at = models.DateTimeField(auto_now_add=True)
+    reason = models.CharField(max_length=255)
+    
+    class Meta:
+        ordering = ['-created_at']

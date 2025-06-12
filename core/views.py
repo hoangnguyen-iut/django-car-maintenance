@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .models import Vehicle, MaintenanceRecord, Garage, GarageService, ServiceCategory, Appointment, UserProfile
+from .models import Vehicle, MaintenanceRecord, Garage, GarageService, ServiceCategory, Appointment, UserProfile, PointHistory
 from .forms import VehicleForm, MaintenanceRecordForm, AppointmentForm
 from django.contrib.auth.forms import UserCreationForm
 from datetime import date, timedelta, datetime
@@ -342,6 +342,14 @@ def reject_point_by_staff(request, record_id):
     
     messages.success(request, f'Đã từ chối cộng điểm cho bản ghi #{record.id}')
     return redirect('point_approvals_list')
+
+@login_required
+def point_history(request):
+    """Xem lịch sử điểm tích lũy"""
+    history = PointHistory.objects.filter(user=request.user)
+    return render(request, 'core/point_history.html', {
+        'history': history
+    })
 
 def welcome(request):
     """Trang chào mừng"""

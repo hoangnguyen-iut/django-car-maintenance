@@ -48,4 +48,5 @@ urlpatterns += [
     path('garage/point-approvals/reject/<int:record_id>/',
          views.reject_point_by_staff,
          name='reject_point'),
+    path('points/history/', views.point_history, name='point_history'),
 ]

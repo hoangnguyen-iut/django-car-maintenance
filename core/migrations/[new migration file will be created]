@@ -1,0 +1,8 @@
+class PointHistory(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    action = models.CharField(max_length=10)
+    points = models.IntegerField()
+    reason = models.TextField()
+
+    class Meta:
+        db_table = 'core_pointhistory'
