@@ -37,3 +37,15 @@ urlpatterns = [
     # path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     # path('accounts/register/', views.register, name='register'),
 ]
+
+urlpatterns += [
+    path('garage/point-approvals/', 
+         views.point_approvals_list, 
+         name='point_approvals_list'),
+    path('garage/point-approvals/approve/<int:record_id>/',
+         views.approve_point_by_staff,
+         name='approve_point'),
+    path('garage/point-approvals/reject/<int:record_id>/',
+         views.reject_point_by_staff,
+         name='reject_point'),
+]

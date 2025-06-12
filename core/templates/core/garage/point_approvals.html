@@ -1,0 +1,123 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Quản lý điểm tích lũy</h2>
+    
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Chủ xe</th>
+                    <th>Biển số</th>
+                    <th>Ngày bảo dưỡng</th>
+                    <th>Chi phí</th>
+                    <th>Ghi chú</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td>{{ record.id }}</td>
+                    <td>
+                        {% if record.vehicle.owner.get_full_name %}
+                            {{ record.vehicle.owner.get_full_name }}
+                        {% else %}
+                            {{ record.vehicle.owner.username }}
+                        {% endif %}
+                    </td>
+                    <td>{{ record.vehicle.bien_so }}</td>
+                    <td>{{ record.ngay_bao_duong|date:"d/m/Y" }}</td>
+                    <td>{{ record.chi_phi|floatformat:0 }} VNĐ</td>
+                    <td>{{ record.noi_dung|default:"-" }}</td>
+                    <td>
+                        <button type="button" class="btn btn-success btn-sm" 
+                                onclick="confirmApprove('{{ record.id }}', '{{ record.chi_phi }}')">
+                            ✅ Duyệt điểm
+                        </button>
+                        
+                        <button type="button" class="btn btn-danger btn-sm ms-2" 
+                                onclick="confirmReject('{{ record.id }}')">
+                            ❌ Từ chối
+                        </button>
+
+                        <form id="approveForm{{ record.id }}" 
+                              action="{% url 'approve_point' record.id %}" 
+                              method="post" style="display: none;">
+                            {% csrf_token %}
+                        </form>
+
+                        <form id="rejectForm{{ record.id }}" 
+                              action="{% url 'reject_point' record.id %}" 
+                              method="post" style="display: none;">
+                            {% csrf_token %}
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">Không có bản ghi nào chờ duyệt điểm</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Thêm SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function confirmApprove(recordId, cost) {
+    const points = Math.floor(parseFloat(cost) / 10000);
+    
+    Swal.fire({
+        title: 'Xác nhận duyệt điểm',
+        html: `
+            <p>Bạn có chắc chắn muốn duyệt điểm cho bản ghi #${recordId}?</p>
+            <p>Điểm sẽ được cộng: <strong>${points} điểm</strong></p>
+        `,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Duyệt điểm',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById(`approveForm${recordId}`).submit();
+        }
+    });
+}
+
+function confirmReject(recordId) {
+    Swal.fire({
+        title: 'Xác nhận từ chối',
+        text: `Bạn có chắc chắn muốn từ chối cộng điểm cho bản ghi #${recordId}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Từ chối điểm',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById(`rejectForm${recordId}`).submit();
+        }
+    });
+}
+</script>
+{% endblock %}

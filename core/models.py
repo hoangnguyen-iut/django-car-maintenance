@@ -30,6 +30,17 @@ class MaintenanceRecord(models.Model):
         default=False,
         verbose_name="Duyệt điểm tích lũy"
     )
+    POINT_STATUS_CHOICES = [
+        ('pending', 'Chờ duyệt'),
+        ('approved', 'Đã duyệt'),
+        ('rejected', 'Bị từ chối'),
+    ]
+    point_status = models.CharField(
+        max_length=20,
+        choices=POINT_STATUS_CHOICES,
+        default='pending',
+        verbose_name='Trạng thái tích điểm'
+    )
 
     def __str__(self):
         """Trả về chuỗi đại diện cho lịch sử bảo dưỡng."""

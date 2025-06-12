@@ -83,8 +83,10 @@
                                 <td>
                                     {% if record.is_point_approved %}
                                         <span class="badge bg-success">✅ Đã duyệt</span>
+                                    {% elif record.point_status == 'rejected' %}
+                                        <span class="badge bg-danger">❌ Bị từ chối</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">❌ Chưa duyệt</span>
+                                        <span class="badge bg-warning">⏳ Chờ duyệt</span>
                                     {% endif %}
                                 </td>
                             </tr>

@@ -37,6 +37,13 @@
                             <li class="nav-item">
                                 <a class="nav-link px-5" href="{% url 'garage_dashboard' %}">QUẢN LÝ LỊCH HẸN</a>
                             </li>
+                            
+                            <!-- Thêm mới menu quản lý điểm tích lũy -->
+                            <li class="nav-item">
+                                <a class="nav-link px-5" href="{% url 'point_approvals_list' %}">
+                                    QUẢN LÝ ĐIỂM TÍCH LŨY
+                                </a>
+                            </li>
                         {% else %}
                             <li class="nav-item">
                                 <a class="nav-link px-5" href="{% url 'vehicle_list' %}">XE CỦA TÔI</a>
