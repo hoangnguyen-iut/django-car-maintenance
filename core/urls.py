@@ -18,10 +18,8 @@ urlpatterns = [
     path('maintenance/<int:pk>/delete/', views.delete_maintenance, name='delete_maintenance'),
     path('garage/<int:garage_id>/appointment/', views.create_appointment, name='create_appointment'),
     path('appointments/', views.appointment_list, name='appointment_list'),
-    path('login/', auth_views.LoginView.as_view(
-        template_name='core/login.html',
-        next_page='/vehicles/'  # Thêm dấu / ở cuối
-    ), name='login'),
+    path('login/', views.custom_login, name='login'),
+    path('accounts/login/', views.custom_login, name='accounts_login'),
     path('register/', views.register, name='register'),  # Thay đổi từ accounts/register/
     path('logout/', auth_views.LogoutView.as_view(
         next_page='/login/',

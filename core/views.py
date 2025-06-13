@@ -8,6 +8,8 @@ from datetime import date, timedelta, datetime
 from math import floor
 from django.views.decorators.http import require_POST
 from .tinh_diem import cong_diem_tich_luy
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 
 
 @login_required
@@ -354,3 +356,28 @@ def point_history(request):
 def welcome(request):
     """Trang chào mừng"""
     return render(request, 'core/welcome.html')
+
+def custom_login(request):
+    """Custom login view to display more specific error messages"""
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        # Check if user exists
+        user_exists = User.objects.filter(username=username).exists()
+        
+        if not user_exists:
+            messages.error(request, 'Tài khoản chưa được đăng ký')
+            return render(request, 'core/login.html')
+        
+        # Try to authenticate
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            login(request, user)
+            next_url = request.GET.get('next', 'vehicle_list')
+            return redirect(next_url)
+        else:
+            messages.error(request, 'Tên đăng nhập hoặc mật khẩu không chính xác')
+            
+    return render(request, 'core/login.html')

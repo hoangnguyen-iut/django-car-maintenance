@@ -4,36 +4,46 @@
 {% block title %}Đăng nhập{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h2 class="text-center mb-4">Đăng nhập</h2>
-                
-                {% if messages %}
-                    <ul class="messages">
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Đăng nhập</h2>
+                </div>
+                <div class="card-body">
+                    <!-- Chỉ hiển thị thông báo từ message framework -->
+                    {% if messages %}
+                    <div class="messages">
                         {% for message in messages %}
-                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
                         {% endfor %}
-                    </ul>
-                {% endif %}
-
-                <form method="post" action="{% url 'login' %}">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="id_username" class="form-label">Tên đăng nhập:</label>
-                        {{ form.username }}
                     </div>
-                    <div class="mb-3">
-                        <label for="id_password" class="form-label">Mật khẩu:</label>
-                        {{ form.password }}
-                    </div>
-                    <input type="hidden" name="next" value="{% url 'vehicle_list' %}">
-                    <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
-                </form>
-                <p class="text-center mt-3">
-                    <a href="/register/" class="text-decoration-none">Đăng ký tài khoản mới</a>
-                </p>
+                    {% endif %}
+                    
+                    <!-- Xóa dòng thông báo cố định ở đây nếu có -->
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label">Tên đăng nhập:</label>
+                            <input type="text" name="username" id="id_username" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_password" class="form-label">Mật khẩu:</label>
+                            <input type="password" name="password" id="id_password" class="form-control" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Đăng nhập</button>
+                        </div>
+                    </form>
+                    <p class="text-center mt-3">
+                        Chưa có tài khoản? <a href="{% url 'register' %}">Đăng ký</a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
