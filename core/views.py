@@ -154,7 +154,13 @@ def edit_maintenance(request, pk):
             initial_period = min((p[0] for p in MaintenanceRecordForm.MAINTENANCE_PERIODS if p[0] >= days), default=365)
         else:
             initial_period = 180
+            
         form = MaintenanceRecordForm(instance=record, initial={'maintenance_period': initial_period})
+        
+        # Lọc danh sách xe chỉ hiển thị xe của user hiện tại
+        user_vehicles = Vehicle.objects.filter(owner=request.user)
+        form.fields['vehicle'].queryset = user_vehicles
+        
     return render(request, 'core/edit_maintenance.html', {'form': form})
 
 @login_required
