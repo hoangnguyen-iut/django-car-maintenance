@@ -38,7 +38,7 @@
                                 <a class="nav-link px-5" href="{% url 'garage_dashboard' %}">QUẢN LÝ LỊCH HẸN</a>
                             </li>
                             
-                            <!-- Thêm mới menu quản lý điểm tích lũy -->
+                            <!-- Menu quản lý điểm tích lũy -->
                             <li class="nav-item">
                                 <a class="nav-link px-5" href="{% url 'point_approvals_list' %}">
                                     QUẢN LÝ ĐIỂM TÍCH LŨY
@@ -113,9 +113,18 @@
     </nav>
 
     <div class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
         {% block content %}{% endblock %}
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+    
