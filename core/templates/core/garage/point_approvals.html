@@ -1,5 +1,6 @@
 {% extends "core/base.html" %}
 {% load static %}
+{% load vnd_format %}
 
 {% block content %}
 <!-- Thêm DataTables CSS -->
@@ -45,7 +46,7 @@
                     </td>
                     <td>{{ record.vehicle.bien_so }}</td>
                     <td>{{ record.ngay_bao_duong|date:"d/m/Y" }}</td>
-                    <td>{{ record.chi_phi|floatformat:0 }} VNĐ</td>
+                    <td>{{ record.chi_phi|vnd_format }}</td>
                     <td>{{ record.noi_dung|default:"-" }}</td>
                     <td>
                         <button type="button" class="btn btn-success btn-sm" 
