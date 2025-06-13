@@ -2,17 +2,11 @@
 
 {% block content %}
 <div class="container mt-4">
-    <div class="alert alert-info mb-4">
-        <p class="mb-0">
-            <i class="fas fa-star"></i> 
-            Điểm tích lũy hiện tại: <strong>{{ user.userprofile.loyalty_points }}</strong> điểm
-        </p>
+    <div class="alert alert-info">
+        <h5><i class="fas fa-star"></i> Điểm tích lũy hiện tại: {{ total_points }} điểm</h5>
     </div>
 
     <div class="card">
-        <div class="card-header">
-            <h5 class="mb-0">Lịch sử điểm tích lũy</h5>
-        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table" id="pointHistoryTable">
@@ -81,24 +75,20 @@
 $(document).ready(function() {
     $('#pointHistoryTable').DataTable({
         language: {
-            emptyTable: "Không có dữ liệu",
-            info: "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
-            infoEmpty: "Hiển thị 0 đến 0 của 0 mục",
-            infoFiltered: "(được lọc từ _MAX_ mục)",
-            lengthMenu: "Hiển thị _MENU_ mục",
-            loadingRecords: "Đang tải...",
-            processing: "Đang xử lý...",
-            search: "Tìm kiếm:",
-            zeroRecords: "Không tìm thấy kết quả",
-            paginate: {
-                first: "Đầu",
-                last: "Cuối",
-                next: "Tiếp",
-                previous: "Trước"
-            },
-            aria: {
-                sortAscending: ": kích hoạt để sắp xếp cột tăng dần",
-                sortDescending: ": kích hoạt để sắp xếp cột giảm dần"
+            "sProcessing":     "Đang xử lý...",
+            "sLengthMenu":     "Hiển thị _MENU_ mục",
+            "sZeroRecords":    "Không tìm thấy kết quả",
+            "sInfo":           "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
+            "sInfoEmpty":      "Hiển thị 0 đến 0 của 0 mục",
+            "sInfoFiltered":   "(được lọc từ _MAX_ mục)",
+            "sInfoPostFix":    "",
+            "sSearch":         "Tìm kiếm:",
+            "sUrl":            "",
+            "oPaginate": {
+                "sFirst":      "Đầu",
+                "sPrevious":   "Trước",
+                "sNext":       "Tiếp",
+                "sLast":       "Cuối"
             }
         },
         order: [[0, 'desc']],
