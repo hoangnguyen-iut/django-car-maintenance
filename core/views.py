@@ -188,9 +188,8 @@ def delete_maintenance(request, pk):
 
 @login_required
 def create_appointment(request, garage_id):
-
+    """Tạo lịch hẹn với Garage"""
     garage = get_object_or_404(Garage, pk=garage_id)
-    
     if request.method == 'POST':
         form = AppointmentForm(request.POST)
         if form.is_valid():
@@ -358,7 +357,7 @@ def welcome(request):
     return render(request, 'core/welcome.html')
 
 def custom_login(request):
-    """Custom login view to display more specific error messages"""
+    """Đăng nhập người dùng"""
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -375,9 +374,9 @@ def custom_login(request):
         
         if user is not None:
             login(request, user)
-            next_url = request.GET.get('next', 'vehicle_list')
-            return redirect(next_url)
+            return redirect('vehicle_list')  # Hoặc nơi bạn muốn chuyển hướng sau khi đăng nhập
         else:
             messages.error(request, 'Tên đăng nhập hoặc mật khẩu không chính xác')
-            
+            return render(request, 'core/login.html')
+    
     return render(request, 'core/login.html')

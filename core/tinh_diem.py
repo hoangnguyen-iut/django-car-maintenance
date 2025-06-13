@@ -13,9 +13,7 @@ def record_point_history(user, maintenance_record, points, action, reason):
     )
 
 def cong_diem_tich_luy(maintenance_record):
-    """
-    Tính và cộng điểm tích lũy cho chủ xe.
-    """
+    """Tính và cộng điểm tích lũy cho chủ xe."""
     try:
         # Debug print
         print(f"Processing points for record {maintenance_record.id}")
@@ -55,12 +53,7 @@ def cong_diem_tich_luy(maintenance_record):
         raise
 
 def tru_diem_tich_luy(maintenance_record):
-    """
-    Trừ điểm tích lũy khi xóa bản ghi bảo dưỡng.
-    
-    Args:
-        maintenance_record: Bản ghi bảo dưỡng bị xóa
-    """
+    """Trừ điểm tích lũy khi xóa bản ghi bảo dưỡng."""
     if not maintenance_record.is_point_approved:
         return
         

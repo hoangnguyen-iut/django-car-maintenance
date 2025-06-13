@@ -54,7 +54,6 @@
                             ✅ Duyệt điểm
                         </button>
                         
-                        <!-- Thay thế nút từ chối hiện tại với modal xác nhận -->
                         <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal{{ record.id }}">
                             ❌ Từ chối
                         </button>
@@ -121,16 +120,16 @@
 <script>
 $(document).ready(function() {
     $('#pointsTable').DataTable({
-        // Cấu hình DataTables
+
         language: {
             url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/vi.json'
         },
         pageLength: 30,
-        order: [[3, 'desc']], // Sắp xếp theo ngày bảo dưỡng mới nhất
+        order: [[3, 'desc']], 
         columnDefs: [
             {
-                targets: -1, // Cột cuối cùng (thao tác)
-                orderable: false, // Không cho phép sắp xếp
+                targets: -1, 
+                orderable: false, 
                 searchable: false
             }
         ],
@@ -141,7 +140,7 @@ $(document).ready(function() {
                 text: 'Xuất Excel',
                 className: 'btn btn-success btn-sm me-2',
                 exportOptions: {
-                    columns: [0,1,2,3,4,5] // Không xuất cột thao tác
+                    columns: [0,1,2,3,4,5] 
                 }
             },
             {
@@ -154,11 +153,10 @@ $(document).ready(function() {
             }
         ],
         initComplete: function () {
-            // Thêm filter cho từng cột
+   
             this.api().columns().every(function (index) {
                 var column = this;
-                
-                // Bỏ qua cột thao tác
+
                 if(index !== 6) {
                     var select = $('<select class="form-select form-select-sm"><option value="">Tất cả</option></select>')
                         .appendTo($(column.header()))
@@ -222,7 +220,6 @@ function confirmReject(recordId) {
 }
 </script>
 
-<!-- Thêm đoạn CSS này vào phần <style> của file hoặc trong thẻ <head> -->
 <style>
     .circle-icon {
         width: 80px;

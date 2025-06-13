@@ -38,7 +38,7 @@ def garage_list(request):
     garages = Garage.objects.all()
     return render(request, 'core/garage_list.html', {'garages': garages})
 
-"""Thêm, sửa, xóa xe."""
+"""Thêm xe."""
 @login_required
 def add_vehicle(request):
     if request.method == 'POST':
@@ -53,7 +53,7 @@ def add_vehicle(request):
         form = VehicleForm()
     return render(request, 'core/add_vehicle.html', {'form': form})
 
-"""Sửa, xóa xe."""        
+"""Sửa xe."""        
 @login_required
 def edit_vehicle(request, pk):
     vehicle = get_object_or_404(Vehicle, pk=pk, owner=request.user)
@@ -131,7 +131,7 @@ def add_maintenance(request):
 
     return render(request, 'core/add_maintenance.html', {'form': form})
 
-"""Sửa, xóa lịch sử bảo dưỡng."""
+"""Sửa lịch sử bảo dưỡng."""
 @login_required
 def edit_maintenance(request, pk):
     record = get_object_or_404(MaintenanceRecord, pk=pk, vehicle__owner=request.user)
@@ -154,7 +154,7 @@ def edit_maintenance(request, pk):
         form = MaintenanceRecordForm(instance=record, initial={'maintenance_period': initial_period})
     return render(request, 'core/edit_maintenance.html', {'form': form})
 
-    """Sửa, xóa lịch sử bảo dưỡng."""   
+"""Xóa lịch sử bảo dưỡng."""       
 @login_required
 def delete_maintenance(request, pk):
     record = get_object_or_404(MaintenanceRecord, pk=pk, vehicle__owner=request.user)
@@ -205,6 +205,7 @@ def is_garage_staff(user):
 
 @user_passes_test(is_garage_staff)
 def manage_appointments(request):
+    """Quản lý lịch hẹn của Garage."""
     garage = request.user.userprofile.garage
     appointments = Appointment.objects.filter(garage=garage).order_by('-ngay_gio')
     return render(request, 'core/manage_appointments.html', {'appointments': appointments})

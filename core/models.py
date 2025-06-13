@@ -56,7 +56,7 @@ class MaintenanceRecord(models.Model):
     def save(self, *args, **kwargs):
         """Lưu lịch sử bảo dưỡng và tự động tính ngày đến hạn nếu chưa được set."""
         if not self.ngay_den_han and self.ngay_bao_duong:
-            self.ngay_den_han = self.ngay_bao_duong + timedelta(days=365)  # mặc định 12 tháng
+            self.ngay_den_han = self.ngay_bao_duong + timedelta(days=365)  
         super().save(*args, **kwargs)
 
     @property
@@ -170,6 +170,7 @@ class UserProfile(models.Model):
     loyalty_points = models.IntegerField(default=0, verbose_name="Điểm tích lũy")
 
 class PointHistory(models.Model):
+    """Model quản lý lịch sử điểm tích lũy của người dùng."""
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     maintenance_record = models.ForeignKey('MaintenanceRecord', on_delete=models.SET_NULL, null=True)
     points = models.IntegerField()  # Số điểm (dương là cộng, âm là trừ)

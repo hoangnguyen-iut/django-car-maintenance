@@ -4,8 +4,10 @@ from django.contrib import messages
 
 admin.site.register(Vehicle)
 
+
 @admin.register(MaintenanceRecord)
 class MaintenanceRecordAdmin(admin.ModelAdmin):
+    """Quản lý bản ghi bảo trì trong trang admin."""
     list_display = ['vehicle', 'ngay_bao_duong', 'chi_phi', 'is_point_approved']
     list_filter = ['is_point_approved']
     
