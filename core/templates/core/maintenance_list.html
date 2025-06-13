@@ -76,7 +76,7 @@
                                     {% endif %}
                                 </td>
                                 <td>{{ record.noi_dung }}</td>
-                                <td class="text-nowrap">{{ record.chi_phi|floatformat:0 }} VNĐ</td>
+                                <td class="text-nowrap">{{ record.formatted_chi_phi }}</td>
                                 <td class="text-nowrap">
                                     {% if record.garage %}
                                         {{ record.garage.ten_garage }}

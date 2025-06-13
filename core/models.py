@@ -73,6 +73,12 @@ class MaintenanceRecord(models.Model):
         days = self.days_remaining
         return abs(days) if days < 0 else 0
 
+    def formatted_chi_phi(self):
+        """Trả về chi phí đã được định dạng theo tiền Việt Nam."""
+        if not self.chi_phi:
+            return "0 VND"
+        return '{:,.0f}'.format(self.chi_phi).replace(',', '.') + " VND"
+
     class Meta:
         verbose_name = "Lịch sử bảo dưỡng"
         verbose_name_plural = "Lịch sử bảo dưỡng"
@@ -140,6 +146,12 @@ class GarageService(models.Model):
     def __str__(self):
 
         return f"{self.garage.ten_garage} - {self.ten_dich_vu}"
+
+    def formatted_gia(self):
+        """Trả về giá đã được định dạng theo tiền Việt Nam."""
+        if not self.gia:
+            return "0 VND"
+        return '{:,.0f}'.format(self.gia).replace(',', '.') + " VND"
 
     class Meta:
         verbose_name = "Dịch vụ của Garage"
