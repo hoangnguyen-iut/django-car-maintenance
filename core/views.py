@@ -289,7 +289,8 @@ def point_approvals_list(request):
     garage = request.user.userprofile.garage
     pending_records = MaintenanceRecord.objects.filter(
         garage=garage,
-        is_point_approved=False
+        is_point_approved=False,
+        is_point_rejected=False  # Thêm điều kiện này để loại bỏ các bản ghi đã từ chối
     ).select_related(
         'vehicle',
         'vehicle__owner'
@@ -325,13 +326,18 @@ def approve_point_by_staff(request, record_id):
 
 @user_passes_test(lambda u: hasattr(u, 'userprofile') and u.userprofile.user_type == 'garage_staff')
 def reject_point_by_staff(request, record_id):
-    record = get_object_or_404(MaintenanceRecord, id=record_id)
+    """Từ chối tích điểm cho bản ghi bảo dưỡng."""
+    garage = request.user.userprofile.garage
+    record = get_object_or_404(MaintenanceRecord, id=record_id, garage=garage)
     
     if record.is_point_approved:
         messages.error(request, 'Không thể từ chối bản ghi đã được duyệt!')
         return redirect('point_approvals_list')
     
-    record.is_point_approved = False  # Đánh dấu từ chối
+    # Cập nhật trạng thái
+    record.is_point_rejected = True
+    record.is_point_approved = False
+    record.point_status = 'rejected'  # Cập nhật trạng thái hiển thị
     record.save()
     
     messages.success(request, f'Đã từ chối cộng điểm cho bản ghi #{record.id}')

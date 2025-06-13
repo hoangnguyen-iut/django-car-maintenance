@@ -87,6 +87,8 @@
                                 <td class="text-nowrap">
                                     {% if record.is_point_approved %}
                                         <span class="badge bg-success">✅ Đã duyệt</span>
+                                    {% elif record.is_point_rejected %}
+                                        <span class="badge bg-danger">❌ Đã từ chối</span>
                                     {% else %}
                                         <span class="badge bg-warning text-dark">⏳ Chờ duyệt</span>
                                     {% endif %}

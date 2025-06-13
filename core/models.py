@@ -30,6 +30,7 @@ class MaintenanceRecord(models.Model):
         default=False,
         verbose_name="Duyệt điểm tích lũy"
     )
+    is_point_rejected = models.BooleanField(default=False, verbose_name="Từ chối tích điểm")
     POINT_STATUS_CHOICES = [
         ('pending', 'Chờ duyệt'),
         ('approved', 'Đã duyệt'),

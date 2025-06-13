@@ -48,5 +48,9 @@ urlpatterns += [
     path('garage/point-approvals/reject/<int:record_id>/',
          views.reject_point_by_staff,
          name='reject_point'),
+    # Thêm dòng này nếu muốn giữ tên trong template
+    path('garage/point-approvals/reject_staff/<int:record_id>/',
+         views.reject_point_by_staff,
+         name='reject_point_by_staff'),
     path('points/history/', views.point_history, name='point_history'),
 ]
