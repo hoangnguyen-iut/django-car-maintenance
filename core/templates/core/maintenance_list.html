@@ -11,6 +11,7 @@
 
     {% block content %}
     <div class="container mt-4">
+        <h2><i class="fas fa-tools"></i> Lịch Sử Bảo Dưỡng</h2>
         <!-- Hiển thị tổng điểm -->
         <div class="alert alert-info mb-4">
             <div class="d-flex justify-content-between align-items-center">
@@ -30,31 +31,31 @@
                 <i class="fas fa-plus"></i> Thêm mới
             </a>
         </div>
-
+        
         <!-- Danh sách bảo dưỡng -->
         {% if records %}
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table table-hover align-middle">
                         <thead>
                             <tr>
-                                <th>Xe</th>
-                                <th>Ngày bảo dưỡng</th>
-                                <th>Ngày đến hạn</th>
-                                <th>Nội dung</th>
-                                <th>Chi phí</th>
-                                <th>Garage</th>
-                                <th>Trạng thái tích điểm</th>
-                                <th>Thao tác</th> <!-- Thêm cột thao tác -->
+                                <th class="text-nowrap"><i class="fas fa-car"></i> Xe</th>
+                                <th class="text-nowrap"><i class="far fa-calendar-alt"></i> Ngày bảo dưỡng</th>
+                                <th class="text-nowrap" style="width: 160px;"><i class="fas fa-calendar-check"></i> Ngày đến hạn</th>
+                                <th><i class="fas fa-tools"></i> Nội dung</th>
+                                <th class="text-nowrap" style="width: 130px;"><i class="fas fa-money-bill"></i> Chi phí</th>
+                                <th class="text-nowrap" style="width: 160px;"><i class="fas fa-warehouse"></i> Garage</th>
+                                <th class="text-nowrap" style="width: 160px;"><i class="fas fa-star"></i> Trạng thái tích điểm</th>
+                                <th class="text-nowrap" style="width: 140px;"><i class="fas fa-cogs"></i> Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for record in records %}
                             <tr>
-                                <td>{{ record.vehicle.bien_so }}</td>
-                                <td>{{ record.ngay_bao_duong|date:"d/m/Y" }}</td>
-                                <td>
+                                <td class="text-nowrap">{{ record.vehicle.bien_so }}</td>
+                                <td class="text-nowrap">{{ record.ngay_bao_duong|date:"d/m/Y" }}</td>
+                                <td class="text-nowrap">
                                     {{ record.ngay_den_han|date:"d/m/Y" }}
                                     {% if record.ngay_den_han %}
                                         {% if record.days_remaining < 0 %}
@@ -75,16 +76,22 @@
                                     {% endif %}
                                 </td>
                                 <td>{{ record.noi_dung }}</td>
-                                <td>{{ record.chi_phi|floatformat:0 }} VNĐ</td>
-                                <td>{{ record.garage.ten_garage }}</td>
-                                <td>
+                                <td class="text-nowrap">{{ record.chi_phi|floatformat:0 }} VNĐ</td>
+                                <td class="text-nowrap">
+                                    {% if record.garage %}
+                                        {{ record.garage.ten_garage }}
+                                    {% else %}
+                                        <em class="text-muted">(Chưa chọn garage)</em>
+                                    {% endif %}
+                                </td>
+                                <td class="text-nowrap">
                                     {% if record.is_point_approved %}
                                         <span class="badge bg-success">✅ Đã duyệt</span>
                                     {% else %}
-                                        <span class="badge bg-warning">⏳ Chờ duyệt</span>
+                                        <span class="badge bg-warning text-dark">⏳ Chờ duyệt</span>
                                     {% endif %}
                                 </td>
-                                <td>
+                                <td class="text-nowrap">
                                     <a href="{% url 'edit_maintenance' record.id %}" class="btn btn-sm btn-primary">
                                         <i class="fas fa-edit"></i> Sửa
                                     </a>
@@ -105,6 +112,14 @@
         </div>
         {% endif %}
     </div>
+
+    <style>
+        td.text-nowrap, th.text-nowrap {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
