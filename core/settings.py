@@ -109,7 +109,7 @@ def garage_detail(request, pk):
 @login_required
 def add_maintenance(request):
     """Thêm lịch sử bảo dưỡng cho xe."""
-    # Check if user has any vehicles
+    # Lấy danh sách xe của người dùng hiện tại
     user_vehicles = Vehicle.objects.filter(owner=request.user)
     if not user_vehicles.exists():
         messages.warning(request, 'Bạn cần thêm ít nhất một xe trước khi thêm lịch sử bảo dưỡng!')
@@ -126,7 +126,7 @@ def add_maintenance(request):
             return redirect('maintenance_list')
     else:
         form = MaintenanceRecordForm()
-        # Filter vehicles for current user
+    # Chỉ hiển thị xe của người dùng hiện tại
         form.fields['vehicle'].queryset = user_vehicles
 
     return render(request, 'core/add_maintenance.html', {'form': form})

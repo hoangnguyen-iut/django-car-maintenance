@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from core.models import Garage, UserProfile
 
 class Command(BaseCommand):
+    """Liên kết tài khoản gara2 với Gara Thành Công """
     help = 'Liên kết tài khoản gara2 với Gara Thành Công'
 
     def handle(self, *args, **options):

@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from core.models import Garage, UserProfile
 
 class Command(BaseCommand):
+    """Liên kết các tài khoản garage với Garage tương ứng."""
     help = 'Liên kết các tài khoản garage với Garage tương ứng'
 
     def handle(self, *args, **options):

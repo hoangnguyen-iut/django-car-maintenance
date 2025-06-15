@@ -131,7 +131,7 @@ def add_maintenance(request):
             return redirect('maintenance_list')
     else:
         form = MaintenanceRecordForm()
-        # Filter vehicles for current user
+    # Lọc danh sách xe chỉ hiển thị xe của user hiện tại
         form.fields['vehicle'].queryset = user_vehicles
 
     return render(request, 'core/add_maintenance.html', {'form': form})
@@ -196,7 +196,7 @@ def create_appointment(request, garage_id):
             appointment = form.save(commit=False)
             appointment.user = request.user
             appointment.garage = garage
-            appointment.trang_thai = 'Chờ xác nhận'  # Updated to match model's status
+            appointment.trang_thai = 'Chờ xác nhận'  # Mặc định là 'Chờ xác nhận'
             appointment.save()
             messages.success(request, 'Đặt lịch hẹn thành công!')
             return redirect('appointment_list')
