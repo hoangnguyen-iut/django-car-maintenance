@@ -1,6 +1,6 @@
 from math import floor
 from django.db import transaction
-from .models import UserProfile, PointHistory
+from ..models import UserProfile, PointHistory
 
 def record_point_history(user, maintenance_record, points, action, reason):
     """Ghi lại lịch sử điểm"""

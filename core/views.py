@@ -7,7 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 from datetime import date, timedelta, datetime
 from math import floor
 from django.views.decorators.http import require_POST
-from .tinh_diem import cong_diem_tich_luy
+from .tinh_diem_tich_luy import cong_diem_tich_luy
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 
@@ -348,8 +348,16 @@ def reject_point_by_staff(request, record_id):
 def point_history(request):
     """Xem lịch sử điểm tích lũy"""
     history = PointHistory.objects.filter(user=request.user)
+    
+    # Lấy hoặc tạo profile cho user
+    profile, created = UserProfile.objects.get_or_create(
+        user=request.user,
+        defaults={'loyalty_points': 0}
+    )
+    # Lấy lịch sử điểm tích lũy
     return render(request, 'core/point_history.html', {
-        'history': history
+        'history': history,
+        'total_points': profile.loyalty_points  # Thêm điểm tích lũy vào context
     })
 
 def welcome(request):
@@ -362,14 +370,14 @@ def custom_login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         
-        # Check if user exists
+        # Kiểm tra xem người dùng có tồn tại không
         user_exists = User.objects.filter(username=username).exists()
         
         if not user_exists:
             messages.error(request, 'Tài khoản chưa được đăng ký')
             return render(request, 'core/login.html')
         
-        # Try to authenticate
+        # Thực hiện xác thực người dùng
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
